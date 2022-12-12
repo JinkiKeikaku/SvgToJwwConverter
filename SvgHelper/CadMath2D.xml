@@ -1,0 +1,3381 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CadMath2D</name>
+    </assembly>
+    <members>
+        <member name="T:CadMath2D.BooleanOperation">
+            <summary>
+            ポリゴンのブール演算
+            </summary>
+        </member>
+        <member name="T:CadMath2D.BooleanOperation.Operation">
+            <summary>
+            演算の種類
+            </summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation.Operation.And">
+            <summary>積</summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation.Operation.Or">
+            <summary>和</summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation.Operation.Sub">
+            <summary>差分</summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation.Operation.Xor">
+            <summary>排他的論理和、穴あきポリゴン</summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation.DoBooleanOperation(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.BooleanOperation.Operation)">
+            <summary>
+            ブール演算実行
+            </summary>
+            <param name="polygon0">ポリゴン0の点列</param>
+            <param name="polygon1">ポリゴン1の点列</param>
+            <param name="opType">演算の種類</param>
+            <returns>変換後のポリゴンをリストで返す</returns>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation.DoXorOperation(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint}})">
+            <summary>
+            複数ポリゴンに対するXOR演算実行
+            </summary>
+            <param name="polygons">ポリゴンの点リストのリスト</param>
+            <returns>変換後のポリゴンをリストで返す</returns>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation.SearchEdge(System.Collections.Generic.List{CadMath2D.BooleanOperation.Edge},System.Int32,System.Collections.Generic.List{CadMath2D.CadPoint},CadMath2D.BooleanOperation.Operation)">
+            ポリラインの最後につながるエッジを返す。
+        </member>
+        <member name="T:CadMath2D.BooleanOperation3">
+            <summary>
+            パスに対する論理演算。
+            </summary>
+        </member>
+        <member name="T:CadMath2D.BooleanOperation3.Operation">
+            <summary>
+            演算の種類
+            </summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation3.Operation.And">
+            <summary>積</summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation3.Operation.Or">
+            <summary>和</summary>
+        </member>
+        <member name="F:CadMath2D.BooleanOperation3.Operation.Sub">
+            <summary>差分</summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.CheckAndSwapEdge(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            エッジが奇数回含まれていたら逆向きにする。
+            </summary>
+            <param name="edgesList"></param>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.RemoveInvalidEdge(System.Collections.Generic.List{System.Collections.Generic.List{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            長さが0のエッジを削除。エッジのリストの数が3未満の時（ポリゴンを構成できない時）削除
+            </summary>
+            <param name="edgesList"></param>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.AlignEdgesList(System.Collections.Generic.List{System.Collections.Generic.List{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            エッジで構成される図形の向きを左回りに整えます。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.GetSelfSplitedEdgesList(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            dstのエッジ自身のパスで分割したエッジを返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.GetSplitedEdgesList(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}},System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            dstのエッジをsplitterで分割したエッジを返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.AddEdgeCrossPoints(System.Collections.Generic.List{CadMath2D.CadPoint},CadMath2D.BooleanOperation3.Edge,CadMath2D.BooleanOperation3.Edge)">
+            <summary>
+            dstエッジとsplitterエッジの交点をcrossPointsに追加する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.CreatePolygon(System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge})">
+            <summary>
+            エッジからポリゴンを作る。エッジの向きは左向きであること。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.CreateDirectionalEdgesList(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            向きを考慮したパスを作る。
+            パスが他のパスに奇数回含まれている場合、エッジの向きを反転する。元のパス（edgesList）は変更しない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.MarkContainEdge(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}},System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            辺の包含関係を調べる。
+            outEdgeListの中にdstEdgesListのエッジが含まれていたらCountに１を加える。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.CheckSameEdge(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}},System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}})">
+            <summary>
+            接した辺をチェックしそのエッジのCountに-2を入れる。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.CheckOperation(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.BooleanOperation3.Edge}},CadMath2D.BooleanOperation3.Operation)">
+            <summary>
+            演算の種類により必要ないエッジを無効（Countを-1）にする。
+            最初にCountには辺がパスに包含された数が入っている。その偶奇を調べCount値を変更する。
+            Andは奇数の辺を1Orは偶数の辺を0にする。その他は-1．
+            Xorは奇数の辺を1、偶数の辺を0にする。
+            SubはAndとOrの組み合わせなのでここでは何もしない
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.SearchEdge(System.Collections.Generic.List{CadMath2D.BooleanOperation3.Edge},System.Int32)">
+            <summary>
+            最初のエッジを探す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.SearchEdge(System.Collections.Generic.List{CadMath2D.BooleanOperation3.Edge},System.Int32,CadMath2D.CadPoint,System.Int32)">
+            <summary>
+            posから始点がlastのエッジを探す。見つからなければ-1を返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.Edge.SplitEdgeByCrossPoints(System.Collections.Generic.List{CadMath2D.BooleanOperation3.Edge},System.Collections.Generic.List{CadMath2D.CadPoint})">
+            <summary>
+            エッジを交点で分割し、dstに追加する。交点のリストの順序はソートされるので注意。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.BooleanOperation3.Edge.IsEdgeEqualIgnoreDirection(CadMath2D.BooleanOperation3.Edge)">
+            <summary>
+            同じエッジか？反対向きでも等しいとする。
+            </summary>
+        </member>
+        <member name="T:CadMath2D.CadMath">
+            <summary>
+            Cadで使う数学関数
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadMath.COMPARE_EPSILON">
+            <summary>
+            数値比較の許容差
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatEQ(System.Double,System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差指定可。
+            </summary>
+            <param name="x">数1</param>
+            <param name="y">数2</param>
+            <param name="epsilon">許容差</param>
+            <returns>等しければtrue</returns>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatEQ(System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差はCOMPARE_EPSILONを使用。
+            x == y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatLE(System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差はCOMPARE_EPSILONを使用。
+            x ＜＝ y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatLT(System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差はCOMPARE_EPSILONを使用。
+            x ＜ y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatGE(System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差はCOMPARE_EPSILONを使用。
+            x >= y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.FloatGT(System.Double,System.Double)">
+            <summary>
+            許容差を含めた比較。許容差はCOMPARE_EPSILONを使用。
+            x > y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.Hypot(System.Double,System.Double)">
+            <summary>
+            距離関数。
+            sqrt(x^2+y^2)
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.NormalizeAngle360(System.Double)">
+            <summary>
+            Degreeを[0, 360)の範囲に正規化
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.DegToRad(System.Double)">
+            <summary>
+            角度変換。
+            Degree->Radian
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.RadToDeg(System.Double)">
+            <summary>
+            角度変換。
+            Radian->Degree。正規化は行わない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.RadToDeg360(System.Double)">
+            <summary>
+            角度変換。
+            RadianからDegreeに変換したのち、[0, 360)に正規化する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.IsAngleContained(System.Double,System.Double,System.Double)">
+            <summary>
+            角度[angleDeg]が[minAngleDeg]と[maxAngleDeg]の間にあればtrue。 
+            <para>例（単位は度で例示）</para>
+            <para>minAngleDegが50でmaxAngleDegが100でangleDegが70ならtrue。</para>
+            <para>minAngleDegが50でmaxAngleDegが100でangleDegが30ならfalse。</para>
+            <para>minAngleDegが350でmaxAngleDegが60でangleDegが10ならtrue。</para>
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.IsAngleContainedInArc(System.Double,System.Double,System.Double)">
+            <summary>
+            角度[angleDeg]が[startDeg]と幅[sweepDeg]の間にあればtrue。 
+            幅はマイナス（左回り）も許容する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.NormalizeArcAngle(System.Double@,System.Double@)">
+            <summary>
+            円弧の弧幅角[sweepDeg]がマイナスの場合、弧幅角を正にし、開始角[startAngle]を修正しtrueを返します。
+            角度は[0, 360)度に正規化されます。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.SubtractAngleDeg(System.Double,System.Double)">
+            <summary>
+            <para>単位が度の角度の減算。aDeg-bDegを行い正規化する。</para>
+            <para>60-30＝30, 30-60=330</para>
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadMath.AddAngleDeg(System.Double,System.Double)">
+            <summary>
+            <para>単位が度の角度の加算。aDeg+bDegを行い正規化する。</para>
+            <para>60+30＝90, 330+60=30</para>
+            </summary>
+        </member>
+        <member name="T:CadMath2D.CadPoint">
+            <summary>
+            CADで使う点
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadPoint.X">
+            <summary>
+            座標X
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadPoint.Y">
+            <summary>
+            座標Y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.#ctor">
+            <summary>
+            コンストラクター
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.#ctor(System.Double,System.Double)">
+            <summary>
+            コンストラクター
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.ToString">
+            <inheritdoc/>>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Set(System.Double,System.Double)">
+            <summary>
+            x,y座標でオブジェクトを設定
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Set(CadMath2D.CadPoint)">
+            <summary>
+            座標でオブジェクトを設定
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Copy">
+            <summary>
+            この点の複製を返す
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.IsZero">
+            <summary>
+            許容差を含め座標が(0, 0)か？
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.IsFinite">
+            <summary>
+            座標がFiniteでtrue。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Offset(CadMath2D.CadPoint)">
+            <summary>
+            座標をオフセットする（this = this + dp）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Offset(System.Double,System.Double)">
+            <summary>
+            座標をオフセットする（this = this + (dx, dy)）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Magnify(System.Double)">
+            <summary>
+            点の座標を拡大（X=X * m, Y = Y * m）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Magnify(System.Double,System.Double)">
+            <summary>
+            点の座標を拡大（X=X * mx, Y = Y * my）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Magnify(CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            点の座標をp0を基準に拡大
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Rotate(System.Double)">
+            <summary>
+            座標を(0, 0)基準で回転。角度はradian。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.RotatePoint(System.Double)">
+            <summary>
+            座標を(0, 0)基準で回転した点を返す。角度はradian。thisは変更されない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Rotate(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            座標をp0基準で回転。角度はradian。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.RotatePoint(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            座標をp0基準で回転した点を返す。角度はradian。thisは変更されない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Rotate90">
+            <summary>
+            座標を(0, 0)基準で左に９０度回転。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.RotateM90">
+            <summary>
+            座標を(0, 0)基準で右に９０度回転。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Negative">
+            <summary>
+            座標を(0, 0)基準で180度回転。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Hypot">
+            <summary>
+            原点からの距離を返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.GetAngle">
+            <summary>
+            原点基準で座標の角度を返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.GetAngle360">
+            <summary>
+            原点基準で座標の角度を0-360のDegで返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Unit">
+            <summary>
+            単位ベクトルに変換する。ゼロベクトルの時はゼロベクトルのまま。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.UnitPoint">
+            <summary>
+            個の座標の単位ベクトルを返す。thisは変更されない。ゼロベクトルの時はゼロベクトル。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.CompareTo(System.Object)">
+            <summary>
+            ベクトルの長さで比較する
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Pole(System.Double)">
+            <summary>
+            角度radで長さ1の座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Pole(System.Double,System.Double)">
+            <summary>
+            長さradiusで角度radの座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Pole(CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            位置p0から半径radius、扁平率flatnes、角度radの座標（傾いてない楕円上の座標）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Dot(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            [p1]と[p2]の内積
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.Cross(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            [p1]と[p2]の外積(p1.x * p2.y - p1.y * p2.x)
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.PointEQ(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            座標が許容誤差を含めて等しいか
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.PointEQ(CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            座標が許容誤差を含めて等しいか。２点間の距離を誤差として指定。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_UnaryPlus(CadMath2D.CadPoint)">
+            <summary>
+            単項＋
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_UnaryNegation(CadMath2D.CadPoint)">
+            <summary>
+            単項ー
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Addition(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            加算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Subtraction(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            減算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Multiply(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            座標の積。p1.X*p2.Y, p1.Y*p2.Y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Division(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            座標の割り算。p1.X/p2.Y, p1.Y/p2.Y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Multiply(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            定数倍
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPoint.op_Division(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            定数の割り算
+            </summary>
+        </member>
+        <member name="T:CadMath2D.CadPointHelper">
+            <summary>
+            点に関する関数群
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.IsPointOnLine(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            [p0]-[p1]の線上に点[p]があるか？端点を含む。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.ToComplex(CadMath2D.CadPoint)">
+            <summary>
+            点を複素数に変換。X→Real、Y→Image
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.ToCadPoint(CadMath2D.Complex)">
+            <summary>
+            複素数を点に変換。Real→X、Image→Y
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.GetMidLine(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ２つの線分の中間の線分を返す。返値は点の配列で2つの場合と３つの場合がある。
+            ２線の交点がある場合、交点、中点1、中点２の３点が返される。
+            交点とそれぞれの中点を結んだ線が中線になる。
+            ２線が平行で交点がない場合、中線の始点、終点の２点が返る。
+            どちらの場合も線分の長さは不定です。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.GetMidLine(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ２つの線分の中間の線分を返す。返値は点の配列で2点。
+            ２線の交点がある場合、交点と指定した点を２線の間に挟む中線が返される（一点目は必ず交点）。
+            ２線が平行で交点がない場合、中線の始点、終点の２点が返る。
+            どちらの場合も線分の長さは不定です。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.PtInTriangle(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            三角形[p0][p1][p2] 内に点[p]があるか？（三角形の辺も含む）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.MagnifyRotatedRectangle(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            幅[width]、高さ[height]、角度[angle](deg)の傾いた矩形を倍率[mx],[my]で拡縮した場合、の矩形を返します。
+            返値は(w, h, a)のタプルです。
+            返される幅と角度は底辺を拡縮した後の幅と角度、高さは左上の頂点を拡縮し、拡縮した底辺までの距離に直角。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadPointHelper.TransformedRectangle(System.Double,System.Double,System.Double,CadMath2D.Matrix2D)">
+            <summary>
+            幅[width]、高さ[height]、角度[angle](deg)の傾いた矩形を[m]で変換した矩形を返します。
+            返される幅と角度は底辺を拡縮した後の幅と角度、高さは左上の頂点を拡縮し、拡縮した底辺までの距離に直角。
+            </summary>
+        </member>
+        <member name="T:CadMath2D.CadRect">
+            <summary>
+            矩形クラス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadRect.Left">
+            <summary>
+            座標
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadRect.Bottom">
+            <summary>
+            座標
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadRect.Right">
+            <summary>
+            座標
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadRect.Top">
+            <summary>
+            座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            矩形を座標で作成。矩形は正規化(Sort())されない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            矩形を２点の対角線を指定して作成。矩形は正規化(Sort())される。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            正方形を中心と半径（幅/高さの半分）で作成
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor(CadMath2D.CadPoint,CadMath2D.CadSize)">
+            <summary>
+            矩形を中心とサイズ（幅と高さ）により作成
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.#ctor(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ４つの座標を含む最小の矩形を作る
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.ToString">
+            <inheritdoc/>>
+        </member>
+        <member name="M:CadMath2D.CadRect.Copy">
+            <summary>
+            コピー作成
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Set(CadMath2D.CadRect)">
+            <summary>
+            [r]で矩形を設定する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Set(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            座標でで矩形を設定する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.TopLeft">
+            <summary>
+            左上座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.TopRight">
+            <summary>
+            右上座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.BottomRight">
+            <summary>
+            右下座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.BottomLeft">
+            <summary>
+            左下座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Center">
+            <summary>
+            中心座標
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.GetPoints">
+            <summary>
+            辺の中点、中心、角の８点を返します。
+            <para>6-7-8</para>
+            <para>3-4-5</para>
+            <para>0-1-2</para>
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.GetVertices">
+            <summary>
+            角の４点を返します。
+            <para>3-2</para>
+            <para>0-1</para>
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Width">
+            <summary>
+            幅
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Height">
+            <summary>
+            高さ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Offset(CadMath2D.CadPoint)">
+            <summary>
+            [dp]矩形を移動
+            </summary>
+            <param name="dp">移動量</param>
+        </member>
+        <member name="M:CadMath2D.CadRect.Offset(System.Double,System.Double)">
+            <summary>
+            [dx,dy]矩形を移動
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.OffsetRect(CadMath2D.CadPoint)">
+            <summary>
+            [dp]移動された矩形を返す。このオブジェクトは変更されない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.OffsetRect(System.Double,System.Double)">
+            <summary>
+            [dx,dy]移動された矩形を返す。このオブジェクトは変更されない。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Magnify(CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            矩形を[p0]を基準に[magx,magy]の比率で拡縮する。
+            図形は正規化される（width>=0 and height >=0）。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Sort">
+            <summary>
+            Left＜Right,　Bottom＜Top　に正規化します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Spread(CadMath2D.CadPoint)">
+            <summary>
+            矩形を[p]を含む領域に拡張します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Spread(CadMath2D.CadRect)">
+            <summary>
+            矩形を[r]を含む領域に拡張します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Inflate(System.Double,System.Double)">
+            <summary>
+            矩形を左右[dx]、上下[dy]拡張します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.SpreadRectByRotate(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            矩形を[p0]を中心に[rad]回転した頂点を含む領域を返します。。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.IsIntersect(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            中心[p]上下左右[radius]の矩形が一部でも含まれていればtrue
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.IsIntersect(CadMath2D.CadRect)">
+            <summary>
+            矩形[r]が一部でも含まれていればtrue
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Contains(CadMath2D.CadPoint)">
+            <summary>
+            点[p]が内部（境界含む）に含まれていればtrue
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.Contains(CadMath2D.CadRect)">
+            <summary>
+            矩形[r]が内部（境界含む）に全て含まれていればtrue
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.IsNull">
+            <summary>
+            矩形が幅高さ共に0の時trueを返します。誤差も考慮します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.IsEmpty">
+            <summary>
+            矩形が幅か高さどちらかが0（面積0）の時trueを返します。誤差も考慮します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadRect.GetBounds(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            頂点[points]を含む最小の領域を返します。pointsのサイズが0の場合、例外をthrowします。
+            </summary>
+            <param name="points">頂点の配列</param>
+            <returns>頂点[points]を含む最小の領域</returns>
+            <exception cref="T:System.ArgumentException">頂点の配列のサイズが0の場合</exception>
+        </member>
+        <member name="T:CadMath2D.CadSize">
+            <summary>
+            領域の大きさなど幅と高さを持つ対象のためのクラス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadSize.Width">
+            <summary>
+            幅
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CadSize.Height">
+            <summary>
+            高さ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadSize.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadSize.#ctor(System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadSize.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:CadMath2D.CadSize.op_Multiply(CadMath2D.CadSize,System.Double)">
+            <summary>
+            定数倍
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CadSize.op_Division(CadMath2D.CadSize,System.Double)">
+            <summary>
+            定数割り算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.ChamferHelper.MakeChamfer(CadMath2D.Parameters.LineParameter,CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint)">
+            <summary>
+            通過点を指定して面取りを作成します。実行後、渡された線パラメータの座標は変更されます。
+            </summary>
+            <param name="line1">線1。パラメータの座標は変更されます。</param>
+            <param name="line2">線2。パラメータの座標は変更されます。</param>
+            <param name="p">通過点</param>
+            <returns>面取りで追加される線。</returns>
+        </member>
+        <member name="M:CadMath2D.ChamferHelper.MakeChamfer(CadMath2D.Parameters.LineParameter,System.Double,CadMath2D.Parameters.LineParameter,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            サイズを指定して面取りを作成します。実行後、渡された線パラメータの座標は変更されます。
+            </summary>
+            <param name="line1">線1。パラメータの座標は変更されます。</param>
+            <param name="line2">線2。パラメータの座標は変更されます。</param>
+            <param name="p">通過点</param>
+            <returns>面取りで追加される線。</returns>
+        </member>
+        <member name="T:CadMath2D.CircleHelper">
+            <summary>
+            円（楕円を含む）に関する各種処理
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.TranslatePoint(CadMath2D.CadPoint,System.Double,System.Double,CadMath2D.CadPoint,System.Boolean)">
+            <summary>
+            楕円にあわせて座標変換する。楕円に関する操作は座標変換で円に直してから行うと簡単になることが多い。
+            [back]がfalseの場合、点[p]を楕円中心が(0,0)になるようにオフセットし
+            楕円の扁平率を1.0、角度を0度の座標に変換する。[back]がtrueの時はその逆変換を行う。
+            例えば、楕円の接点を求める場合は[back]をfalseで原点中心の円の接点を求めた結果を[back]をtrue
+            にして楕円に座標変換すると計算が簡単になる。
+            </summary>
+            <param name="p">変換される座標</param>
+            <param name="back">falseの場合、点[p]を楕円中心が(0,0)になるようにオフセットし、
+            楕円の扁平率を1.0、角度を0度の座標に変換する。trueの時はその逆変換。</param>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.IsPointContained(CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            円内に点が含まれるか。円周上も含む。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.IsPointContained(CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            楕円内に点が含まれるか。円周上も含む。
+            </summary>
+            <param name="center">楕円の中心</param>
+            <param name="radius">楕円の半径</param>
+            <param name="flatness">楕円の扁平率</param>
+            <param name="angleDeg">楕円の角度(deg)</param>
+            <param name="p">点</param>
+            <returns>円周を含む楕円内ならtrue</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetNearCircle(System.Collections.Generic.IReadOnlyList{CadMath2D.Parameters.CircleParameter},CadMath2D.CadPoint)">
+            <summary>
+            指定した点から円周に最も近い円を返す。
+            </summary>
+            <param name="circles">円の配列</param>
+            <param name="p">点</param>
+            <returns>配列のインデックス。マイナスの場合は円が無い。</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetNearArc(System.Collections.Generic.IReadOnlyList{CadMath2D.Parameters.ArcParameter},CadMath2D.CadPoint)">
+            <summary>
+            指定した点から円周に最も近い円弧を返す。
+            </summary>
+            <param name="arcs">円弧の配列</param>
+            <param name="p">点</param>
+            <returns>配列のインデックス。マイナスの場合は円が無い。</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetQuadrantDivision(System.Double,System.Double,System.Int32)">
+            <summary>
+            四分円を線分に分割する時の分割数を返す。
+            </summary>
+            <param name="radius">四分円の半径。</param>
+            <param name="divError">円弧と直線との誤差。0の場合は最大分割数(maxDiv)が返る</param>
+            <param name="maxDiv">四分円の最大分割数。</param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.CreateArcPoints(CadMath2D.CadPoint,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            円弧を等分した点を返します。角度の分割数[div]は360度の時の分割数です。div=60なら６度で分割します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.CreateCircleFrom3P(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            3点を通過する円を返す
+            </summary>
+            <param name="p0"></param>
+            <param name="p1"></param>
+            <param name="p2"></param>
+            <returns>円</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.CreateCircleFrom2PAndRadius(CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            2点と半径を指定して円を作成します。
+            もしも２点が同じ座標の時はその座標の左右に円が作られます。
+            </summary>
+            <param name="p0"></param>
+            <param name="p1"></param>
+            <param name="radius"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.CreateArcFrom3P(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            3点を指定して円弧を作成します。円弧の始点は[p0]、終点は[p1]で通過点が[p2]です。
+            返される弧角は始点、終点の関係においてマイナスになる場合があります。
+            </summary>
+            <param name="p0">始点</param>
+            <param name="p1">終点</param>
+            <param name="p2">通過点</param>
+            <returns>円弧パラメータ</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            線と線に接する円。半径指定。
+            線と線が平行な時は半径によらず円の数は0。通常は円は４個ある。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            線と円に接する円。半径指定
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            線と円に接する円。通過点指定。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            円と円に接する円。半径指定。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            円と円に接する円。通過点指定。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ３つの線に接する円
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            2つの線と１つの円に接する円
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            1つの線と2つの円に接する円
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialCircles(CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            3つの円に接する円
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetTangentialLine(CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円と楕円の接線を返す。
+            </summary>
+            <returns>接線のリストを返す。</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetCircleTangentPoint(CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            点[anchor]から楕円への接点を返す。
+            </summary>
+            <param name="center">楕円の中心</param>
+            <param name="radius">楕円の半径</param>
+            <param name="flatness">楕円扁平率</param>
+            <param name="angleDeg">楕円角度（°）</param>
+            <param name="anchor">接線を引く位置</param>
+            <returns>楕円上の接点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetCircleTangentPoint(CadMath2D.CadPoint,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円の角度指定接点
+            </summary>
+            <param name="center">楕円の中心</param>
+            <param name="radius">楕円の半径</param>
+            <param name="flatness">楕円扁平率</param>
+            <param name="angleDeg">楕円角度（°）</param>
+            <param name="tangentAngleDeg">接線の角度</param>
+            <returns>接点の配列。配列サイズは２。</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.GetCircleOrthogonalPoint(CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            楕円に[anchor]からおろした垂線の座標を返す。
+            </summary>
+            <param name="center">楕円の中心</param>
+            <param name="radius">楕円の半径</param>
+            <param name="flatness">楕円扁平率</param>
+            <param name="angleDeg">楕円角度（°）</param>
+            <param name="anchor">垂線を引く位置</param>
+            <returns>楕円上の垂点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.ContactPoint(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            2つの円｛半径r1 中心(0,0), 半径r2 中心(x2,y2)｝に接し、線(x31,y31)-(x32,y32)に接する円。
+            r1,r2どちらかを-にすることで、内側(？)に接する円も解けます。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CircleHelper.ContactPoint(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            3つの円｛半径r1 中心(0,0), 半径r2 中心(x2,y2), 半径r3 中心(x3,y3)｝に接する円。
+            r1,r2どちらかを-にすることで、内側(？)に接する円も解けます。
+            </summary>
+        </member>
+        <member name="T:CadMath2D.Complex">
+            <summary>
+            複素数
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Complex.Re">
+            <summary>Real</summary>
+        </member>
+        <member name="F:CadMath2D.Complex.Im">
+            <summary>Image</summary>
+        </member>
+        <member name="M:CadMath2D.Complex.#ctor">
+            <inheritdoc/>>
+        </member>
+        <member name="M:CadMath2D.Complex.#ctor(System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.ToString">
+            <inheritdoc/>>
+        </member>
+        <member name="M:CadMath2D.Complex.Conj">
+            <summary>
+            複素共役を返す
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.Norm">
+            <summary>
+            ノルム（長さ）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.Arg">
+            <summary>
+            偏角（角度）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.Polar(System.Double,System.Double)">
+            <summary>
+            長さと角度から複素数を作る。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_UnaryPlus(CadMath2D.Complex)">
+            <summary>
+            単項＋
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_UnaryNegation(CadMath2D.Complex)">
+            <summary>
+            単項ー
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Addition(CadMath2D.Complex,CadMath2D.Complex)">
+            <summary>
+            加算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Subtraction(CadMath2D.Complex,CadMath2D.Complex)">
+            <summary>
+            減算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Multiply(CadMath2D.Complex,CadMath2D.Complex)">
+            <summary>
+            乗算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Division(CadMath2D.Complex,CadMath2D.Complex)">
+            <summary>
+            除算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Multiply(CadMath2D.Complex,System.Double)">
+            <summary>
+            定数倍
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Complex.op_Division(CadMath2D.Complex,System.Double)">
+            <summary>
+            定数除算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CornerHelper.MakeLineLineCorner(CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint,CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint)">
+            <summary>
+            線と線のコーナー処理。
+            パラメータを渡すとコーナー処理がされる（パラメータが変更される）。
+            クリック点は線を選択したときのクリック場所でそこの線を残すようにーナーを作る。
+            クリック点は線の近傍であればよい（線上になくてもよい）。
+            </summary>
+            <param name="l1">線1</param>
+            <param name="hp1">クリック点1</param>
+            <param name="l2">線2</param>
+            <param name="hp2">クリック点2</param>
+            <returns>コーナー処理が出来た場合、true。</returns>
+        </member>
+        <member name="M:CadMath2D.CornerHelper.MakeLineArcCorner(CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint,CadMath2D.Parameters.OvalArcParameter,CadMath2D.CadPoint)">
+            <summary>
+            線と円弧のコーナー処理
+            パラメータを渡すとコーナー処理がされる（パラメータが変更される）。
+            クリック点は線を選択したときのクリック場所でそこの線を残すようにーナーを作る。
+            クリック点は線の近傍であればよい（線上になくてもよい）。
+            コーナー処理できない場合でもパラメータは処理途中の経過が入るため変更されるので注意して下さい。
+            </summary>
+            <param name="line">線</param>
+            <param name="hitPoint1">クリック点1</param>
+            <param name="arc">円弧</param>
+            <param name="hitPoint2">クリック点2</param>
+            <returns>コーナー処理が出来た場合、true。</returns>
+        </member>
+        <member name="M:CadMath2D.CornerHelper.MakeArcArcCorner(CadMath2D.Parameters.OvalArcParameter,CadMath2D.CadPoint,CadMath2D.Parameters.OvalArcParameter,CadMath2D.CadPoint)">
+            <summary>
+            円弧と円弧のコーナー処理
+            パラメータを渡すとコーナー処理がされる（パラメータが変更される）。
+            クリック点は線を選択したときのクリック場所でそこの線を残すようにーナーを作る。
+            クリック点は線の近傍であればよい（線上になくてもよい）。
+            コーナー処理できない場合でもパラメータは処理途中の経過が入るため変更されるので注意して下さい。
+            </summary>
+            <param name="arc1">円弧1</param>
+            <param name="hitPoint1">クリック点1</param>
+            <param name="arc2">円弧2</param>
+            <param name="hitPoint2">クリック点2</param>
+            <returns>コーナー処理が出来た場合、true。</returns>
+        </member>
+        <member name="T:CadMath2D.CrossPointHelper.CrossPointFlag">
+            <summary>
+            交点フラグ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPointFlag.None">
+            <summary> 交点なし </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPointFlag.OnLine1">
+            <summary> 線1に交点あり </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPointFlag.OnLine2">
+            <summary> 線2に交点あり </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPointFlag.OnLine1And2">
+            <summary> 線1と線2に交点あり </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPointFlag.NotOnLine">
+            <summary> 交点はあるが線上にない </summary>
+        </member>
+        <member name="T:CadMath2D.CrossPointHelper.CrossPoint">
+            <summary>
+            交点クラス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPoint.P">
+            <summary>
+            交点
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.CrossPoint.Flag">
+            <summary>
+            交点の種類を表すフラグ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.CrossPoint.#ctor(CadMath2D.CadPoint,CadMath2D.CrossPointHelper.CrossPointFlag)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p">交点座標。</param>
+            <param name="flag">フラグ。</param>
+        </member>
+        <member name="T:CadMath2D.CrossPointHelper.PerpPoint">
+            <summary>
+            垂点クラス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.PerpPoint.P">
+            <summary>
+            垂点
+            </summary>
+        </member>
+        <member name="F:CadMath2D.CrossPointHelper.PerpPoint.IsOnLine">
+            <summary>
+            垂点が線上にあればtrue
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.PerpPoint.#ctor(CadMath2D.CadPoint,System.Boolean)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p">垂点</param>
+            <param name="isOnLine">線上にあればtrue</param>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetCrossPoint(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            2線の交点と交点フラグを返す。
+            </summary>
+            <param name="p11">線1の点1</param>
+            <param name="p12">線1の点2</param>
+            <param name="p21">線2の点1</param>
+            <param name="p22">線2の点2</param>
+            <returns>交点オブジェクト。</returns>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetPerpPoint(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            点[p]から線分[p0]-[p1]におろした垂線の交点を返す。交点が線分上にある場合はisOnlineがtrue。
+            何らかの垂線は必ずあるので返値はnullにならない。
+            </summary>
+            <returns>PerpPointオブジェクト。</returns>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetLinePolylineCrossPoint(CadMath2D.CadPoint,CadMath2D.CadPoint,System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean)">
+            <summary>
+            線とポリラインの交点
+            </summary>
+            <param name="p0">線分の点0。</param>
+            <param name="p1">線分の点1。</param>
+            <param name="points">ポリラインの点列。</param>
+            <param name="closed">ポリラインが閉じていればtrue。</param>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetLineCircleCrossPoint(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            線と円の交点
+            </summary>
+            <param name="p1">線の始点</param>
+            <param name="p2">線の終点</param>
+            <param name="p0">円の中心</param>
+            <param name="radius">円の半径</param>
+            <param name="flat">円の扁平率</param>
+            <param name="deg">円の回転角（°）</param>
+            <returns>交点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetCircleCircleCrossPoint(CadMath2D.CadPoint,System.Double,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            円と円の交点
+            </summary>
+            <param name="p1">円1の中心</param>
+            <param name="r1">円1の半径</param>
+            <param name="p2">円2の中心</param>
+            <param name="r2">円2の半径</param>
+            <returns>交点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.OvalOvalCross(CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円と楕円の交点を返す。
+            </summary>
+            <param name="center1">楕円1中心</param>
+            <param name="radius1">楕円1半径</param>
+            <param name="flat1">楕円1扁平率</param>
+            <param name="angleDeg1">楕円1角度（°）</param>
+            <param name="center2">楕円2中心</param>
+            <param name="radius2">楕円2半径</param>
+            <param name="flat2">楕円2扁平率</param>
+            <param name="angleDeg2">楕円2角度（°）</param>
+            <returns>交点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.AddPathCrossPoint(System.Collections.Generic.List{CadMath2D.CrossPointHelper.CrossPoint},CadMath2D.CrossPointHelper.CrossPoint,System.Boolean)">
+            <summary>
+            パスの交点追加。isEndがtrueの時は始点と交点の座標が等しい時は追加しない（EndPath時の対応）。
+            交点cpは作成時、最初の要素がパスの線であること。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.AddPolylineCrossPoint(System.Collections.Generic.List{CadMath2D.CrossPointHelper.CrossPoint},System.Collections.Generic.IReadOnlyList{CadMath2D.CrossPointHelper.CrossPoint},System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Int32,System.Boolean)">
+            <summary>
+            交点は作成時、最初の要素がポリラインの線であること。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.ConvertCrossPoints(System.Collections.Generic.IReadOnlyList{CadMath2D.CrossPointHelper.CrossPoint},System.Predicate{CadMath2D.CrossPointHelper.CrossPoint})">
+            <summary>
+            [src]の交点リストから条件にあう交点を選んで点のListで返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.CrossPointHelper.GetBeziersCrossPoints(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Collections.Generic.List{CadMath2D.CadPoint},System.Int32)">
+            <summary>
+            ２つのベジェ曲線の交点を再帰的に調べる。
+            交差するベジェ曲線を半分に切り取ってさらに調べ、繰り返し数になったら
+            それぞれの頂点の作る直線の交点をpointsに追加する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.SplitBezier3(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            ３次ベジェ曲線をパラメータで指示する位置で２つに分割する。
+            ２つの曲線が返るので7点返される。始点終点含め返される点は新たに作られる。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.GetBezier3Extent(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ベジェ曲線を囲む矩形を返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.GetBezier3Extent(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            複数セグメントのベジェ曲線を囲む矩形を返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.GetNearBezier3ParametricValue(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ある点から一番近いベジェ曲線のパラメータを返します。端点では法線にならないことに注意。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.GetNearBezier3Index(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint,System.Boolean)">
+            <summary>
+            点がベジェの点配列から一番近いインデックスを返す。
+            </summary>
+            <param name="points">点の配列</param>
+            <param name="p">参照点</param>
+            <param name="containControlPoint">falseの時は頂点のみ。trueの時は制御点を含む点</param>
+            <returns>一番近い点のインデックスを返す。配列のサイズが0の場合は-1を返す。</returns>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.GetNearBezier3PointOnSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint)">
+            <summary>
+            ある点から一番近いセグメントでつながったベジェ曲線のインデックスとセグメント上のパラメータを返します。
+            渡されるベジェ曲線の点は4以下の場合はnullが返ります。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.BezierHelper.SpredBezier3Extent(CadMath2D.CadRect,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            ベジェ曲線を囲む範囲rを変曲点で拡張する。
+            端点は見ないので使う前にセグメントの始点と終点でrを初期化すること。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.Beziers.EnumBezier3Points(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Int32,System.Boolean})">
+            <summary>
+            ３次ベジェ曲線のセグメントを列挙する。列挙関数[func]には始点、制御点1、制御点2，終点、始点のインデックスが渡される。
+            </summary>
+            <param name="points">頂点と制御点のリストセグメント数をnとするとサイズは(3 * n)+1となる。 </param>
+            <param name="func">列挙関数。flseを返すと列挙中止</param>
+            <returns>列挙中止でfalse</returns>
+        </member>
+        <member name="M:CadMath2D.Curves.Beziers.CreateBezier2(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Int32,System.Boolean)">
+            <summary>
+            ２次のベジェ曲線
+            </summary>
+            <param name="p0">始点</param>
+            <param name="p1">制御点</param>
+            <param name="p2">終点</param>
+            <param name="div">分割数</param>
+            <param name="includeLastPoint">終点を含むか？</param>
+            <returns>点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.Curves.Beziers.CreateBezier3(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Int32,System.Boolean)">
+            <summary>
+            3次のベジェ曲線
+            </summary>
+            <param name="p0">始点</param>
+            <param name="p1">制御点1</param>
+            <param name="p2">制御点2</param>
+            <param name="p3">終点</param>
+            <param name="div">分割数</param>
+            <param name="includeLastPoint">終点を含むか？</param>
+            <returns>点のリスト</returns>
+        </member>
+        <member name="M:CadMath2D.Curves.CurveConverter.ArcToBezier3(CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,CadMath2D.Curves.CurveConverter.ArcDirection)">
+            <summary>
+            ２点P1,P2を通る半径rの円弧を３次ベジェ曲線で近似する。
+            ２点を通る円弧は４つあるのでフラグで指定する。
+            円弧ができないパラメータが指定されるとサイズ0の配列を返します。
+            返されるパラメータには始点と終点が含まれないので注意してください。
+            </summary>
+            <param name="p1">始点</param>
+            <param name="p2">終点</param>
+            <param name="radius">半径</param>
+            <param name="direction"></param>
+            <returns>３次ベジェ曲線の始点と終点を除いたパラメータを返す。
+            角度により返される配列のサイズが異なるので注意。サイズは
+            作成できない場合は0、
+            曲線が１つの場合は（制御点1、制御点2）を返し、
+            曲線が２つの場合は（制御点1、制御点2、頂点、制御点3、制御点4）を返す。
+            </returns>
+        </member>
+        <member name="M:CadMath2D.Curves.CurveConverter.ArcToBezier3(CadMath2D.CadPoint,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円弧を3次ベジェ曲線で近似します。
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">傾き（度）</param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.Curves.CurveConverter.ArcToBezier3(CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,System.Double,System.Double,CadMath2D.Curves.CurveConverter.ArcDirection)">
+            <summary>
+            ２点P1,P2を通る半径、扁平率、傾きを指定して楕円弧３次ベジェ曲線で近似する。
+            ２点を通る楕円弧は４つあるのでフラグで指定する。
+            円弧ができないパラメータが指定されるとサイズ0の配列を返します。
+            返されるパラメータには始点と終点が含まれないので注意してください。
+            </summary>
+            <param name="p1">始点</param>
+            <param name="p2">終点</param>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">傾き（度）</param>
+            <param name="direction"></param>
+            <returns>３次ベジェ曲線の始点と終点を除いたパラメータを返す。
+            角度により返される配列のサイズが異なるので注意。サイズは
+            作成できない場合は0、
+            曲線が１つの場合は（制御点1、制御点2）を返し、
+            曲線が２つの場合は（制御点1、制御点2、頂点、制御点3、制御点4）を返す。
+            </returns>
+        </member>
+        <member name="M:CadMath2D.Curves.CurveConverter.CircleToBezier3(CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円を3次ベジェ曲線で近似します。曲線は左回りで90度ごとに4つのセグメントで構成されます。
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">傾き（度）</param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.Curves.CurveConverter.SplineToBezier(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Double,System.Boolean)">
+            <summary>
+            スプラインを３次ベジェに変換。頂点はコピーされ新規に作成される。
+            </summary>
+            <param name="points"></param>
+            <param name="tension"></param>
+            <param name="isClosed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.Curves.SplineHelper.GetNearCardinalSplinePointOnSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,System.Double,CadMath2D.CadPoint)">
+            <summary>
+            ある点から一番近い複数セグメントのカーディナルスプライン上の点、インデックス、パラメータ値を取得する。
+            頂点数が1以下の場合など取得できない場合はnullが返る。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.SplineHelper.GetNearCardinalSplineParametricValue(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            ある点から一番近いカーディナルスプライン上のパラメータ値を取得する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.SplineHelper.GetCardinalSplineExtent(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,System.Double)">
+            <summary>
+            スプライン曲線を囲む矩形を返す。頂点数が0の場合は例外が発生する。
+            </summary>
+            <param name="points">頂点</param>
+            <param name="isClosed">閉じたスプラインはtrue</param>
+            <param name="tension">テンション。0～1.0。0で直線</param>
+            <returns>スプライン曲線を囲む矩形</returns>
+            <exception cref="T:System.ArgumentException">頂点数が0の場合発生する</exception>
+        </member>
+        <member name="M:CadMath2D.Curves.Splines.CreateCardinalSpline(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,System.Double,System.Int32)">
+            <summary>
+            カーディナルスプライン
+            </summary>
+            <param name="points">頂点のリスト</param>
+            <param name="isClosed">閉じているか</param>
+            <param name="tension">テンション。0～1.0。0で直線</param>
+            <param name="div">分割数</param>
+            <returns>スプラインの点列</returns>
+        </member>
+        <member name="M:CadMath2D.Curves.Splines.GetCardinalSplinePoint(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            パラメータ値からカーディナルスプライン曲線上の点を取得する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.Splines.GetCardinalSpline(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            パラメータ値からカーディナルスプライン曲線の値を取得する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Curves.Splines.EnumSplinePoints(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Int32,System.Boolean})">
+            <summary>
+            スプラインの頂点を列挙します。列挙は[i-1][i][i+1][i+2]の4点を返します。
+            開いたスプラインの場合、始めの4つの頂点は[0][0][1][2]、終わりは[n-3][n-2][n-1][n-1]、
+            閉じたスプラインの場合、[n-1][0][1][2]、終わりは[n-3][n-2][n-1][0]。
+            func()がfalseを返すと列挙を中断します。
+            </summary>
+            <param name="points">頂点</param>
+            <param name="isLoop">trueで閉じたスプライン</param>
+            <param name="func">列挙関数</param>
+            <returns>列挙完了でtrue、途中終了でfalse</returns>
+        </member>
+        <member name="T:CadMath2D.FilletHelper">
+            <summary>
+            フィレット作成関数群
+            </summary>
+        </member>
+        <member name="M:CadMath2D.FilletHelper.CreateFillet(CadMath2D.Parameters.LineParameter,CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            通過点を指定してフィレットを作成します。実行後、渡された線パラメータの座標はフィレットに応じて変更されます。
+            半径を指定することができます。半径が0の時は通過点指定です。
+            線と線のクリック点と通過点によりどの角にフィレットが作られるか計算されます。
+            クリック点は正確に線上にある必要はありません。
+            </summary>
+            <param name="line1">線1</param>
+            <param name="line2">線2</param>
+            <param name="p">通過点。半径指定時はどの角か指定します。</param>
+            <param name="radius">半径。0の時は通過点指定になります。</param>
+            <returns>円弧。フィレットが作れなかった場合、半径が0になります。</returns>
+        </member>
+        <member name="M:CadMath2D.FilletHelper.CreateFillet(CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint,CadMath2D.Parameters.ArcParameter,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            線と円弧にフィレットを作成します。実行後、渡された線パラメータの座標はフィレットに応じて変更されます。
+            半径を指定することができます。半径が0の時は通過点指定です。
+            線と円弧のクリック点と通過点によりどの角にフィレットが作られるか計算されます。
+            クリック点は正確に線上にある必要はありません。
+            </summary>
+            <param name="line">線</param>
+            <param name="hpLine">線のクリック点</param>
+            <param name="arc">円弧</param>
+            <param name="hpArc">円弧のクリック点</param>
+            <param name="p">通過点。半径指定時はどの角か指定します。</param>
+            <param name="radius">半径。0の時は通過点指定になります。</param>
+            <returns>円弧。フィレットが作れなかった場合、半径が0になります。</returns>
+        </member>
+        <member name="M:CadMath2D.FilletHelper.CreateFillet(CadMath2D.Parameters.ArcParameter,CadMath2D.CadPoint,CadMath2D.Parameters.ArcParameter,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            円弧と円弧にフィレットを作成します。実行後、渡された線パラメータの座標はフィレットに応じて変更されます。
+            半径を指定することができます。半径が0の時は通過点指定です。
+            円弧と円弧のクリック点と通過点によりどの角にフィレットが作られるか計算されます。
+            クリック点は正確に線上にある必要はありません。
+            </summary>
+            <param name="arc1">円弧1</param>
+            <param name="hpArc1">円弧1のクリック点</param>
+            <param name="arc2">円弧2</param>
+            <param name="hpArc2">円弧2のクリック点</param>
+            <param name="p">通過点。半径指定時はどの角か指定します。</param>
+            <param name="radius">半径。0の時は通過点指定になります。</param>
+            <returns>円弧。フィレットが作れなかった場合、半径が0になります。</returns>
+        </member>
+        <member name="M:CadMath2D.FilletHelper.GetNearPointIndexInCircle(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            接点群から円の選択点に近い接点を取得
+            </summary>
+            <param name="円上の接点群"></param>
+            <param name="center">円の中心</param>
+            <param name="target">選択点</param>
+            <returns>選択点に近いインデックスを返す。paのサイズが0の場合、-1。</returns>
+        </member>
+        <member name="T:CadMath2D.Hatching.SimpleHatching">
+            <summary>
+            単純な斜め線のハッチング
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Hatching.SimpleHatching.#ctor(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint}},CadMath2D.CadPoint,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="polygons">ハッチング領域のポリゴンのリスト。ポリゴンは頂点を渡す</param>
+            <param name="p0">ハッチング開始点</param>
+            <param name="angleDeg">ハッチング角度</param>
+        </member>
+        <member name="M:CadMath2D.Hatching.SimpleHatching.CreateHatching(System.Double,System.Double)">
+            <summary>
+            ハッチング作成
+            </summary>
+            <param name="pitch">間隔</param>
+            <param name="offset">ハッチング開始位置をオフセットする。</param>
+            <returns>ハッチングの線のリストを返す。</returns>
+        </member>
+        <member name="M:CadMath2D.LineHelper.SetPointKeepPhase(CadMath2D.Parameters.LineParameter,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            LineParameterの始点終点の順序を維持したままどちらかの点を変更します。
+            </summary>
+            <param name="dstLine">変更される線</param>
+            <param name="keepPoint">
+            始点にこの座標があれば終点が、終点にこの座標があれば始点が変更されます。
+            始点終点どちらにも無い場合は未定義です。</param>
+            <param name="dstPoint">変更する座標。[keepPoint]により始点か終点か決まります。</param>
+        </member>
+        <member name="T:CadMath2D.Matrix2D">
+            <summary>
+            拡大縮小、回転使う行列。
+            
+            <para>|A11 A12|</para>
+            <para>|A21 A22|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Matrix2D.A11">
+            <summary>
+            要素
+            <para>|A11 A12|</para>
+            <para>|A21 A22|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Matrix2D.A12">
+            <summary>
+            要素
+            <para>|A11 A12|</para>
+            <para>|A21 A22|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Matrix2D.A21">
+            <summary>
+            要素
+            <para>|A11 A12|</para>
+            <para>|A21 A22|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Matrix2D.A22">
+            <summary>
+            要素
+            <para>|A11 A12|</para>
+            <para>|A21 A22|</para>
+            </summary>
+        </member>
+        <member name="P:CadMath2D.Matrix2D.IsInvertible">
+            <summary>
+            逆行列が存在するか？
+            </summary>
+        </member>
+        <member name="P:CadMath2D.Matrix2D.IsIdentity">
+            <summary>
+            恒等行列か？
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.Rotate(System.Double)">
+            <summary>
+            この行列に回転操作を行います。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.Transpose">
+            <summary>
+            行列を転置します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.TransposedMatrix">
+            <summary>
+            転置行列を返します。このオブジェクトの値は変わりません。。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.Invert">
+            <summary>
+            行列を逆行列にします。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.InvertedMatrix">
+            <summary>
+            逆行列を返します。このオブジェクトは変更されません。逆行列が存在しない場合は例外が発生します。
+            /// </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.Copy">
+            <summary>
+            コピーを返します。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.op_Addition(CadMath2D.Matrix2D,CadMath2D.Matrix2D)">
+            <summary>
+            加算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.op_Subtraction(CadMath2D.Matrix2D,CadMath2D.Matrix2D)">
+            <summary>
+            減算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.op_UnaryNegation(CadMath2D.Matrix2D)">
+            <summary>
+            マイナス
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.op_Multiply(CadMath2D.Matrix2D,CadMath2D.Matrix2D)">
+            <summary>
+            マトリックスの乗算。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Matrix2D.op_Multiply(CadMath2D.Matrix2D,CadMath2D.CadPoint)">
+            <summary>
+            点をマトリックスで座標変換。
+            </summary>
+        </member>
+        <member name="T:CadMath2D.Parameters.ArcParameter">
+            <summary>
+            円弧パラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.ArcParameter.P0">
+            <summary> 中心 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.ArcParameter.Radius">
+            <summary> 半径 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.ArcParameter.StartAngle">
+            <summary> 開始角（度） </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.ArcParameter.SweepAngle">
+            <summary> 角幅（度） </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.#ctor(CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="startDeg">開始角（度）</param>
+            <param name="sweepDeg">角幅（度）</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.Copy">
+            <summary>
+            ディープコピーします。
+            </summary>
+            <returns>コピーされたオブジェクト</returns>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.GetStartPoint">
+            <summary>
+            始点取得
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.GetEndPoint">
+            <summary>
+            終点取得
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.ArcParameter.Normalize">
+            <summary>
+            円弧の弧幅角がマイナスの場合、弧幅角を正にし、開始角を修正しtrueを返します。
+            角度は[0, 360)度に正規化されます。
+            </summary>
+            <returns>弧幅角がマイナスで反転されたらtrue。</returns>
+        </member>
+        <member name="T:CadMath2D.Parameters.CircleParameter">
+            <summary>
+            円のパラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.CircleParameter.P0">
+            <summary> 中心 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.CircleParameter.Radius">
+            <summary> 半径 </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.CircleParameter.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.CircleParameter.#ctor(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.CircleParameter.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:CadMath2D.Parameters.CircleParameter.Copy">
+            <summary>
+            ディープコピーします。
+            </summary>
+            <returns>コピーされたオブジェクト</returns>
+        </member>
+        <member name="T:CadMath2D.Parameters.LineParameter">
+            <summary>
+            線のパラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.LineParameter.P0">
+            <summary>
+            点0
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.LineParameter.P1">
+            <summary>
+            点1
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.#ctor(CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">点0</param>
+            <param name="p1">点1</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="x1"></param>
+            <param name="y1"></param>
+            <param name="x2"></param>
+            <param name="y2"></param>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.Copy">
+            <summary>
+            ディープコピーします。
+            </summary>
+            <returns>コピーされたオブジェクト</returns>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.Offset(CadMath2D.CadPoint)">
+            <summary>
+            座標をオフセットします。
+            </summary>
+            <param name="dp"></param>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.Rotate(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            回転
+            </summary>
+            <param name="p">回転中心</param>
+            <param name="angleRad">回転角(rad)</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.Scale(CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            拡大縮小する。
+            </summary>
+            <param name="p">基準点</param>
+            <param name="mx">横倍率</param>
+            <param name="my">縦倍率</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.LineParameter.Transform(CadMath2D.TransformMatrix)">
+            <summary>
+            変形する
+            </summary>
+            <param name="m">マトリックス</param>
+        </member>
+        <member name="T:CadMath2D.Parameters.OvalArcParameter">
+            <summary>
+            楕円弧パラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.P0">
+            <summary> 中心 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.Radius">
+            <summary> 半径 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.Flatness">
+            <summary> 扁平率 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.Angle">
+            <summary> 角度（度） </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.StartAngle">
+            <summary> 開始角（度） </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalArcParameter.SweepAngle">
+            <summary> 角幅（度） </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.#ctor(CadMath2D.CadPoint,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">角度（度）</param>
+            <param name="startDeg">開始角（度）</param>
+            <param name="sweepDeg">角幅（度）</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.Copy">
+            <summary>
+            ディープコピーします。
+            </summary>
+            <returns>コピーされたオブジェクト</returns>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.Rotate(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            回転する。回転角はrad。
+            </summary>
+            <param name="p0">回転中心</param>
+            <param name="rad">回転角（rad）</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.Scale(CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            拡大縮小する。
+            </summary>
+            <param name="p0">基準点</param>
+            <param name="mx">横倍率</param>
+            <param name="my">縦倍率</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.Transform(CadMath2D.TransformMatrix)">
+            <summary>
+            変形する
+            </summary>
+            <param name="m">マトリックス</param>
+            <exception cref="T:System.ArithmeticException">逆行列が存在しない場合</exception>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.GetStartPoint">
+            <summary>
+            始点取得
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.GetEndPoint">
+            <summary>
+            終点取得
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalArcParameter.Normalize">
+            <summary>
+            円弧の弧幅角がマイナスの場合、弧幅角を正にし、開始角を修正しtrueを返します。
+            角度は[0, 360)度に正規化されます。
+            </summary>
+            <returns>弧幅角がマイナスで反転されたらtrue。</returns>
+        </member>
+        <member name="T:CadMath2D.Parameters.OvalParameter">
+            <summary>
+            楕円のパラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalParameter.P0">
+            <summary> 中心 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalParameter.Radius">
+            <summary> 半径 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalParameter.Flatness">
+            <summary> 扁平率 </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.OvalParameter.Angle">
+            <summary> 角度（度） </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.#ctor(CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">角度（度）</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.Copy">
+            <summary>
+            ディープコピーします。
+            </summary>
+            <returns>コピーされたオブジェクト</returns>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.Normalize">
+            <summary>
+            楕円の正規化。扁平率が1.0の場合は傾斜角度を0。
+            また、傾斜角度が90で割り切れるなら傾斜角度を0度にして扁平率と半径を変換する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.Rotate(CadMath2D.CadPoint,System.Double)">
+            <summary>
+            回転する。回転角はrad。
+            </summary>
+            <param name="p0">回転中心</param>
+            <param name="rad">回転角（rad）</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.Scale(CadMath2D.CadPoint,System.Double,System.Double)">
+            <summary>
+            拡大縮小する。
+            </summary>
+            <param name="p0">基準点</param>
+            <param name="mx">横倍率</param>
+            <param name="my">縦倍率</param>
+        </member>
+        <member name="M:CadMath2D.Parameters.OvalParameter.Transform(CadMath2D.TransformMatrix)">
+            <summary>
+            変形する
+            </summary>
+            <param name="m">マトリックス</param>
+            <exception cref="T:System.ArithmeticException">逆行列が存在しない場合</exception>
+        </member>
+        <member name="T:CadMath2D.Parameters.RectParameter">
+            <summary>
+            矩形のパラメータ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.RectParameter.Width">
+            <summary>
+            幅
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.RectParameter.Height">
+            <summary>
+            高さ
+            </summary>
+        </member>
+        <member name="F:CadMath2D.Parameters.RectParameter.AngleDeg">
+            <summary>
+            角度（度）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Parameters.RectParameter.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="width">幅</param>
+            <param name="height">高さ</param>
+            <param name="angleDeg">角度（度）</param>
+        </member>
+        <member name="M:CadMath2D.Path.PathConverter.PathToPolygons(System.Collections.Generic.IReadOnlyList{CadMath2D.Path.IPathElement},System.Int32)">
+            <summary>
+            パスをポリラインのリストに分解します。
+            </summary>
+            <param name="path"></param>
+            <param name="div"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CadMath2D.Path.PathHelper.WalkPath(System.Collections.Generic.IReadOnlyList{CadMath2D.Path.IPathElement},System.Func{CadMath2D.CadPoint,System.Boolean},System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,System.Boolean},System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint,System.Boolean},System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,System.Boolean,System.Boolean})">
+            <summary>
+            パスのリストをたどって要素ごとの処理を行います。各処理はfalseを返すと中断される。
+            </summary>
+            <param name="path">パスのリスト</param>
+            <param name="startAction">StartPathの処理。開始点が渡される。</param>
+            <param name="lineAction">線要素。始点終点</param>
+            <param name="bezierAction">ベジェ要素。開始点、制御点1、制御点2、終点が渡される。</param>
+            <param name="endAction">終点、このパスの最初の点、閉じるかのフラグが渡される。</param>
+            <returns>最後まで処理を行ったらtrue。処理中断したらfalse。</returns>
+        </member>
+        <member name="M:CadMath2D.Path.PathMaker.AddPolyline(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean)">
+            <summary>
+            ポリラインを追加します。これにBeginPath(), EndPath()は必要ありません。
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="M:CadMath2D.Path.PathMaker.AddCircle(CadMath2D.CadPoint,System.Double,System.Double,System.Double)">
+            <summary>
+            楕円を追加します。これにBeginPath(), EndPath()は必要ありません。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Path.PathMaker.AddArc(System.Double,CadMath2D.CadPoint,CadMath2D.Curves.CurveConverter.ArcDirection)">
+            <summary>
+            現在位置からpの座標へ半径rの円弧を描きます。
+            </summary>
+            <param name="r">半径</param>
+            <param name="pointTo">円弧終点</param>
+            <param name="direction">円弧の向き</param>
+        </member>
+        <member name="M:CadMath2D.Path.PathMaker.AddArc(System.Double,System.Double,System.Double,CadMath2D.CadPoint,CadMath2D.Curves.CurveConverter.ArcDirection)">
+            <summary>
+            現在位置からpの座標への楕円弧を描きます。
+            </summary>
+            <param name="radius">半径</param>
+            <param name="flatness">扁平率</param>
+            <param name="angleDeg">傾き[度]</param>
+            <param name="pointTo">円弧終点</param>
+            <param name="direction">円弧の向き</param>
+            <exception cref="T:System.ArithmeticException"></exception>
+        </member>
+        <member name="T:CadMath2D.PolylineHelper">
+            <summary>
+            ポリライン、ポリゴンに関する関数群
+            </summary>
+        </member>
+        <member name="T:CadMath2D.PolylineHelper.PolylineEdge">
+            <summary>
+            ポリラインの辺
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdge.Index">
+            <summary>
+            ポリラインの辺の始点側のインデックス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdge.P0">
+            <summary>
+            辺の頂点（始点側）
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdge.P1">
+            <summary>
+            辺の頂点（終点側）
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.PolylineEdge.#ctor(System.Int32,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="index">ポリラインの辺の始点側のインデックス</param>
+            <param name="p0">辺の頂点（始点側）</param>
+            <param name="p1">辺の頂点（終点側）</param>
+        </member>
+        <member name="T:CadMath2D.PolylineHelper.PolylineEdgePoint">
+            <summary>
+            ポリラインの辺上の点を表現する構造体
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdgePoint.Index">
+            <summary>
+            ポリラインの辺の始点側のインデックス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdgePoint.P">
+            <summary>
+            ポリラインの辺上の点
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.PolylineEdgePoint.Distance">
+            <summary>
+            点までの距離。使用する関数により定義される。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.PolylineEdgePoint.#ctor(System.Int32,CadMath2D.CadPoint,System.Double)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="index">ポリラインの辺の始点側のインデックス</param>
+            <param name="p">ポリラインの辺上の点</param>
+            <param name="distance">点までの距離</param>
+        </member>
+        <member name="T:CadMath2D.PolylineHelper.TriangleParam">
+            <summary>
+            三角形を表現するクラス
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.TriangleParam.P0">
+            <summary>
+            頂点0
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.TriangleParam.P1">
+            <summary>
+            頂点1
+            </summary>
+        </member>
+        <member name="F:CadMath2D.PolylineHelper.TriangleParam.P2">
+            <summary>
+            頂点2
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.TriangleParam.#ctor(CadMath2D.CadPoint,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="p0">頂点0</param>
+            <param name="p1">頂点1</param>
+            <param name="p2">頂点2</param>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.MeasureArea(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            頂点で囲む面積を返します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.MeasureLengh(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean)">
+            <summary>
+            ポリラインの長さを返す。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.EnumPoints(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,System.Func{CadMath2D.CadPoint,CadMath2D.CadPoint,System.Int32,System.Boolean})">
+            <summary>
+            点のリストを順番に２つの点を列挙する。
+            [isLoop]がtrueの場合、通常の列挙に加えて(終点,始点)のペアーも追加される。
+            </summary>
+            <param name="points"></param>
+            <param name="isLoop">始点と終点が閉じている場合はtrue。</param>
+            <param name="func"> func(p0,p1,i)で、p0=points[i], p1=points[i+1]。falseを返すと列挙を途中で終了。</param>
+            <returns>func()がfalseを返し途中で終了した場合はfalse。</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.IsPointOnLines(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint,System.Boolean)">
+            <summary>
+            [pts]が頂点のポリライン上に点[p]があるか？端点を含む。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.CreatePolygon(System.Int32,CadMath2D.CadPoint,System.Double,System.Double,System.String)">
+            <summary>
+            正N角形を作成します。
+            </summary>
+            <param name="n">角数</param>
+            <param name="p0">中心</param>
+            <param name="radius">半径</param>
+            <param name="angle">角度</param>
+            <param name="mode">
+            <para>side:中心から辺までの距離がradius。</para>
+            <para>bottom:底辺がｐ0で辺長がradius。</para>
+            <para>vertex:中心から頂点までの距離がradius。</para>
+            </param>
+            <returns>頂点の配列</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.IsPolygonLeft(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            多角形の頂点[points]が左回りか？
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.CreateNormalizedPolygon(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean)">
+            <summary>
+            ポリゴンの重複する頂点を削除し、[forceLeft]がtrueの時は向きを左回りに正規化する。
+            </summary>
+            <param name="points">ポリゴンの頂点。終点と始点はつながっているものとみなします。</param>
+            <param name="forceLeft">trueで左向きに正規化します。falseの時は向きの正規化をしません。</param>
+            <returns>変換後の頂点</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.CopyPoints(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            点のリストをディープコピーします。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.PointInPolygon(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint)">
+            <summary>
+            点列[pts]で囲まれる領域（辺上も含む）に点pが含まれているか調べる。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.ConvertPolygonToTriangle(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+             <summary>
+            頂点[points] のポリゴンを三角形に分割し3つの頂点のタプルの配列を返す。
+             </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetFirstValidSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            頂点[points]を先頭から調べ、0ベクトルでない辺を返します。
+            返値はPolylineEdgeでP0がpoints[i]、P1がpoints[i + 1])です。
+            </summary>
+            <param name="points">ポリラインの頂点のリスト</param>
+            <returns>辺が返る。みつからなかった場合はnull。</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetLastValidSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint})">
+            <summary>
+            頂点[points]を後ろから調べ、0ベクトルでない辺を返します。
+            返値はPolylineEdgeでP0がpoints[i]、P1がpoints[i + 1])です。
+            </summary>
+            <param name="points">ポリラインの頂点のリスト</param>
+            <returns>辺が返る。みつからなかった場合は辺のインデックスが-1となる。</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetNearPointOnSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,CadMath2D.CadPoint)">
+            <summary>
+            点が点配列で示される線分から一番近い線上の点（点から線分へ垂直におろした点）と始点側のインデックスと距離を返す。
+            線上に点がない場合はnull。
+            </summary>
+            <param name="points">点列</param>
+            <param name="isClosed">点列が閉じている（ポリゴン）</param>
+            <param name="p"></param>
+            <returns>
+            インデックスと線上の点と距離を含むPolylineEdgePointオブジェクトが返る。
+            線上に点がない場合はnull。
+            </returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetNearCrossPointOnSegment(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},System.Boolean,CadMath2D.CadPoint,CadMath2D.CadPoint)">
+            <summary>
+            点が指定される方向で点配列で示される線分から一番近い辺上の交点とインデックスと距離を返す。
+            辺上に交点がない場合はnull。
+            </summary>
+            <param name="points">点列</param>
+            <param name="isClosed">点列が閉じている（ポリゴン）</param>
+            <param name="p"></param>
+            <param name="direction"></param>
+            <returns>
+            インデックスと交点と距離を含むPolylineEdgePointオブジェクトが返る。
+            交点がない場合はnull。
+            </returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetNearIndex(System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint},CadMath2D.CadPoint)">
+            <summary>
+            点が点配列から一番近いインデックスを返す。
+            </summary>
+            <param name="points">点の配列</param>
+            <param name="p">参照点</param>
+            <returns>一番近い点のインデックスを返す。配列のサイズが0の場合は-1を返す。</returns>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.Degenerate(System.Collections.Generic.IList{CadMath2D.CadPoint},System.Boolean)">
+            <summary>
+            ポイントの縮退処理。
+            同じ座標の点が連続している場合、また３点が一つの直線状の時、点を縮退する。
+            ３点が一つの直線状の時とは、例えばx---x---xのときで中央の点を削除する。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.PolylineHelper.GetConnectedLines(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{CadMath2D.CadPoint}},System.Double)">
+            <summary>
+            ポリラインをつなげて長いポリラインを再構成する。ポリラインの端点がつながっているかは端点間の距離が[epsilon]以内であるかで判断する。
+            始点と終点がつながっている場合はそれ以上延長せず一つのポリラインとして登録する。
+            作られたポリラインは元の端点が残っているために同じ座標の点が連続することがある。必要なければDegenerate()などで不要な点を削除すること。
+            返される点は[src]のオブジェクトであるため内容を書き換えると影響が出る。変更する場合はCopy()などでクローンすること。
+            </summary>
+            <param name="src"></param>
+            <param name="epsilon"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CadMath2D.Solvers">
+            <summary>
+            方程式解法
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Solvers.QuadEq(System.Double,System.Double,System.Double)">
+            <summary>
+            2次方程式ax^2+bx+c=0の解を返します。
+            </summary>
+            <returns>配列で解を返す。配列のサイズは解の種類により0,1,2となる。</returns>
+        </member>
+        <member name="M:CadMath2D.Solvers.QuadEqC(System.Double,System.Double,System.Double)">
+            <summary>
+            2次方程式ax^2+bx+c=0の解を複素数で返します。
+            </summary>
+            <returns>配列で解を返す。配列のサイズは解の種類により0,1,2となる。</returns>
+        </member>
+        <member name="M:CadMath2D.Solvers.SolveEq(System.Double[])">
+            <summary>
+            n次の方程式を解く。係数は高次から。a[0] * x^n + a[1] * x^(n-1) + ... + a[n]
+            解法には固有値を使う。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.Solvers.NewtonEq(System.Double[],System.Double,System.Double,System.Int32)">
+            <summary>
+            Newton法でn次の方程式を解く。
+            </summary>
+            <param name="a">係数</param>
+            <param name="startValue">初期値</param>
+            <param name="epsilon">収束判定条件。</param>
+            <param name="nMax">最大繰り返し回数</param>
+            <returns>解。解が収束したかどうかは収束判定条件でチェックすること。</returns>
+        </member>
+        <member name="M:CadMath2D.Solvers.NewtonEqN(System.Double[],System.Func{System.Double[],System.Double}[],System.Func{System.Double[],System.Double}[],System.Double,System.Int32)">
+            <summary>
+            ニュートン法により連立方程式の解を求める。
+            引数の配列サイズが不正な場合、例外が発生する。
+            </summary>
+            <param name="x0">初期値の配列</param>
+            <param name="f">関数の配列。</param>
+            <param name="df">関数の変微分の配列（ヤコビ行列）。</param>
+            <param name="epsilon">収束判定条件。</param>
+            <param name="nMax">繰り返し回数の最大値</param>
+            <returns>解の配列。解が見つからなければnull。</returns>
+            <exception cref="T:System.ArgumentException">引数の配列サイズが不正な場合発生する。</exception>
+        </member>
+        <member name="T:CadMath2D.TransformMatrix">
+            <summary>
+            拡大縮小、回転、平行移動に使う行列。
+            
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.A">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.B">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.C">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.D">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.Tx">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="F:CadMath2D.TransformMatrix.Ty">
+            <summary>
+            要素
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="P:CadMath2D.TransformMatrix.IsIdentity">
+            <summary>
+            恒等行列か？
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            コンストラクタ
+            <para>|A B Tx|</para>
+            <para>|C D Ty|</para>
+            <para>|0 0 1|</para>
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Copy">
+            <summary>
+            コピーを返します。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Reset">
+            <summary>
+            単位行列にします。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Transform(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            引数で指定する係数のマトリックスを前に掛けます。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Translate(System.Double,System.Double)">
+            <summary>
+            平行移動
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Scale(System.Double,System.Double)">
+            <summary>
+            拡縮
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.Rotate(System.Double)">
+            <summary>
+            回転。角度はradian。前に掛けます。
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.op_Addition(CadMath2D.TransformMatrix,CadMath2D.TransformMatrix)">
+            <summary>
+            加算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.op_Subtraction(CadMath2D.TransformMatrix,CadMath2D.TransformMatrix)">
+            <summary>
+            減算
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.op_Multiply(CadMath2D.TransformMatrix,CadMath2D.TransformMatrix)">
+            <summary>
+            行列の積
+            </summary>
+        </member>
+        <member name="M:CadMath2D.TransformMatrix.op_Multiply(CadMath2D.TransformMatrix,CadMath2D.CadPoint)">
+            <summary>
+            座標変換
+            </summary>
+        </member>
+        <member name="T:DotNetMatrix.CholeskyDecomposition">
+            <summary>Cholesky Decomposition.
+            For a symmetric, positive definite matrix A, the Cholesky decomposition
+            is an lower triangular matrix L so that A = L*L'.
+            If the matrix is not symmetric or positive definite, the constructor
+            returns a partial decomposition and sets an internal flag that may
+            be queried by the isSPD() method.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.CholeskyDecomposition.L">
+            <summary>Array for internal storage of decomposition.
+            @serial internal array storage.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.CholeskyDecomposition.n">
+            <summary>Row and column dimension (square matrix).
+            @serial matrix dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.CholeskyDecomposition.isspd">
+            <summary>Symmetric and positive definite flag.
+            @serial is symmetric and positive definite flag.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.CholeskyDecomposition.#ctor(DotNetMatrix.GeneralMatrix)">
+            <summary>Cholesky algorithm for symmetric and positive definite matrix.</summary>
+            <param name="Arg">  Square, symmetric matrix.
+            </param>
+            <returns>     Structure to access L and isspd flag.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.CholeskyDecomposition.SPD">
+            <summary>Is the matrix symmetric and positive definite?</summary>
+            <returns>     true if A is symmetric and positive definite.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.CholeskyDecomposition.GetL">
+            <summary>Return triangular factor.</summary>
+            <returns>     L
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.CholeskyDecomposition.Solve(DotNetMatrix.GeneralMatrix)">
+            <summary>Solve A*X = B</summary>
+            <param name="B">  A Matrix with as many rows as A and any number of columns.
+            </param>
+            <returns>     X so that L*L'*X = B
+            </returns>
+            <exception cref="T:System.ArgumentException">  Matrix row dimensions must agree.
+            </exception>
+            <exception cref="T:System.SystemException"> Matrix is not symmetric positive definite.
+            </exception>
+        </member>
+        <member name="T:DotNetMatrix.EigenvalueDecomposition">
+            <summary>Eigenvalues and eigenvectors of a real matrix. 
+            If A is symmetric, then A = V*D*V' where the eigenvalue matrix D is
+            diagonal and the eigenvector matrix V is orthogonal.
+            I.e. A = V.Multiply(D.Multiply(V.Transpose())) and 
+            V.Multiply(V.Transpose()) equals the identity matrix.
+            If A is not symmetric, then the eigenvalue matrix D is block diagonal
+            with the real eigenvalues in 1-by-1 blocks and any complex eigenvalues,
+            lambda + i*mu, in 2-by-2 blocks, [lambda, mu; -mu, lambda].  The
+            columns of V represent the eigenvectors in the sense that A*V = V*D,
+            i.e. A.Multiply(V) equals V.Multiply(D).  The matrix V may be badly
+            conditioned, or even singular, so the validity of the equation
+            A = V*D*Inverse(V) depends upon V.cond().
+            
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.n">
+            <summary>Row and column dimension (square matrix).
+            @serial matrix dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.issymmetric">
+            <summary>Symmetry flag.
+            @serial internal symmetry flag.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.d">
+            <summary>Arrays for internal storage of eigenvalues.
+            @serial internal storage of eigenvalues.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.e">
+            <summary>Arrays for internal storage of eigenvalues.
+            @serial internal storage of eigenvalues.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.V">
+            <summary>Array for internal storage of eigenvectors.
+            @serial internal storage of eigenvectors.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.H">
+            <summary>Array for internal storage of nonsymmetric Hessenberg form.
+            @serial internal storage of nonsymmetric Hessenberg form.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.EigenvalueDecomposition.ort">
+            <summary>Working storage for nonsymmetric algorithm.
+            @serial working storage for nonsymmetric algorithm.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.EigenvalueDecomposition.#ctor(DotNetMatrix.GeneralMatrix)">
+            <summary>Check for symmetry, then construct the eigenvalue decomposition</summary>
+            <param name="Arg">   Square matrix
+            </param>
+            <returns>     Structure to access D and V.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.EigenvalueDecomposition.RealEigenvalues">
+            <summary>Return the real parts of the eigenvalues</summary>
+            <returns>     real(diag(D))
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.EigenvalueDecomposition.ImagEigenvalues">
+            <summary>Return the imaginary parts of the eigenvalues</summary>
+            <returns>     imag(diag(D))
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.EigenvalueDecomposition.D">
+            <summary>Return the block diagonal eigenvalue matrix</summary>
+            <returns>     D
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.EigenvalueDecomposition.GetV">
+            <summary>Return the eigenvector matrix</summary>
+            <returns>     V
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.Maths.Hypot(System.Double,System.Double)">
+            <summary>
+             sqrt(a^2 + b^2) without under/overflow.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotNetMatrix.GeneralMatrix">
+            <summary>.NET GeneralMatrix class.
+            
+            The .NET GeneralMatrix Class provides the fundamental operations of numerical
+            linear algebra.  Various constructors create Matrices from two dimensional
+            arrays of double precision floating point numbers.  Various "gets" and
+            "sets" provide access to submatrices and matrix elements.  Several methods 
+            implement basic matrix arithmetic, including matrix addition and
+            multiplication, matrix norms, and element-by-element array operations.
+            Methods for reading and printing matrices are also included.  All the
+            operations in this version of the GeneralMatrix Class involve real matrices.
+            Complex matrices may be handled in a future version.
+            
+            Five fundamental matrix decompositions, which consist of pairs or triples
+            of matrices, permutation vectors, and the like, produce results in five
+            decomposition classes.  These decompositions are accessed by the GeneralMatrix
+            class to compute solutions of simultaneous linear equations, determinants,
+            inverses and other matrix functions.  The five decompositions are:
+            <P/><UL>
+            <LI>Cholesky Decomposition of symmetric, positive definite matrices.</LI>
+            <LI>LU Decomposition of rectangular matrices.</LI>
+            <LI>QR Decomposition of rectangular matrices.</LI>
+            <LI>Singular Value Decomposition of rectangular matrices.</LI>
+            <LI>Eigenvalue Decomposition of both symmetric and nonsymmetric square matrices.</LI>
+            </UL>
+            <DL>
+            <DT><B>Example of use:</B></DT>
+            <P/>
+            <DD>Solve a linear system A x = b and compute the residual norm, ||b - A x||.
+            <P/><PRE>
+            double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}};
+            GeneralMatrix A = new GeneralMatrix(vals);
+            GeneralMatrix b = GeneralMatrix.Random(3,1);
+            GeneralMatrix x = A.Solve(b);
+            GeneralMatrix r = A.Multiply(x).Subtract(b);
+            double rnorm = r.NormInf();
+            </PRE></DD>
+            </DL>
+            </summary>
+            <author>  
+            The MathWorks, Inc. and the National Institute of Standards and Technology.
+            </author>
+            <version>  5 August 1998
+            </version>
+        </member>
+        <member name="F:DotNetMatrix.GeneralMatrix.A">
+            <summary>Array for internal storage of elements.
+            @serial internal array storage.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.GeneralMatrix.m">
+            <summary>Row and column dimensions.
+            @serial row dimension.
+            @serial column dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.GeneralMatrix.n">
+            <summary>Row and column dimensions.
+            @serial row dimension.
+            @serial column dimension.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.#ctor(System.Int32,System.Int32)">
+            <summary>Construct an m-by-n matrix of zeros. </summary>
+            <param name="m">   Number of rows.
+            </param>
+            <param name="n">   Number of colums.
+            </param>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.#ctor(System.Int32,System.Int32,System.Double)">
+            <summary>Construct an m-by-n constant matrix.</summary>
+            <param name="m">   Number of rows.
+            </param>
+            <param name="n">   Number of colums.
+            </param>
+            <param name="s">   Fill the matrix with this scalar value.
+            </param>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.#ctor(System.Double[][])">
+            <summary>Construct a matrix from a 2-D array.</summary>
+            <param name="A">   Two-dimensional array of doubles.
+            </param>
+            <exception cref="T:System.ArgumentException">   All rows must have the same length
+            </exception>
+            <seealso cref="M:DotNetMatrix.GeneralMatrix.Create(System.Double[][])">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.#ctor(System.Double[][],System.Int32,System.Int32)">
+            <summary>Construct a matrix quickly without checking arguments.</summary>
+            <param name="A">   Two-dimensional array of doubles.
+            </param>
+            <param name="m">   Number of rows.
+            </param>
+            <param name="n">   Number of colums.
+            </param>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.#ctor(System.Double[],System.Int32)">
+            <summary>Construct a matrix from a one-dimensional packed array</summary>
+            <param name="vals">One-dimensional array of doubles, packed by columns (ala Fortran).
+            </param>
+            <param name="m">   Number of rows.
+            </param>
+            <exception cref="T:System.ArgumentException">   Array length must be a multiple of m.
+            </exception>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.Array">
+            <summary>Access the internal two-dimensional array.</summary>
+            <returns>     Pointer to the two-dimensional array of matrix elements.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.ArrayCopy">
+            <summary>Copy the internal two-dimensional array.</summary>
+            <returns>     Two-dimensional array copy of matrix elements.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.ColumnPackedCopy">
+            <summary>Make a one-dimensional column packed copy of the internal array.</summary>
+            <returns>     Matrix elements packed in a one-dimensional array by columns.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.RowPackedCopy">
+            <summary>Make a one-dimensional row packed copy of the internal array.</summary>
+            <returns>     Matrix elements packed in a one-dimensional array by rows.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.RowDimension">
+            <summary>Get row dimension.</summary>
+            <returns>     m, the number of rows.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.GeneralMatrix.ColumnDimension">
+            <summary>Get column dimension.</summary>
+            <returns>     n, the number of columns.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Create(System.Double[][])">
+            <summary>Construct a matrix from a copy of a 2-D array.</summary>
+            <param name="A">   Two-dimensional array of doubles.
+            </param>
+            <exception cref="T:System.ArgumentException">   All rows must have the same length
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Copy">
+            <summary>Make a deep copy of a matrix</summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.GetElement(System.Int32,System.Int32)">
+            <summary>Get a single element.</summary>
+            <param name="i">   Row index.
+            </param>
+            <param name="j">   Column index.
+            </param>
+            <returns>     A(i,j)
+            </returns>
+            <exception cref="T:System.IndexOutOfRangeException">  
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.GetMatrix(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Get a submatrix.</summary>
+            <param name="i0">  Initial row index
+            </param>
+            <param name="i1">  Final row index
+            </param>
+            <param name="j0">  Initial column index
+            </param>
+            <param name="j1">  Final column index
+            </param>
+            <returns>     A(i0:i1,j0:j1)
+            </returns>
+            <exception cref="T:System.IndexOutOfRangeException">   Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.GetMatrix(System.Int32[],System.Int32[])">
+            <summary>Get a submatrix.</summary>
+            <param name="r">   Array of row indices.
+            </param>
+            <param name="c">   Array of column indices.
+            </param>
+            <returns>     A(r(:),c(:))
+            </returns>
+            <exception cref="T:System.IndexOutOfRangeException">   Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.GetMatrix(System.Int32,System.Int32,System.Int32[])">
+            <summary>Get a submatrix.</summary>
+            <param name="i0">  Initial row index
+            </param>
+            <param name="i1">  Final row index
+            </param>
+            <param name="c">   Array of column indices.
+            </param>
+            <returns>     A(i0:i1,c(:))
+            </returns>
+            <exception cref="T:System.IndexOutOfRangeException">   Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.GetMatrix(System.Int32[],System.Int32,System.Int32)">
+            <summary>Get a submatrix.</summary>
+            <param name="r">   Array of row indices.
+            </param>
+            <param name="j0">  Initial column index
+            </param>
+            <param name="j1">  Final column index
+            </param>
+            <returns>     A(r(:),j0:j1)
+            </returns>
+            <exception cref="T:System.IndexOutOfRangeException">   Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SetElement(System.Int32,System.Int32,System.Double)">
+            <summary>Set a single element.</summary>
+            <param name="i">   Row index.
+            </param>
+            <param name="j">   Column index.
+            </param>
+            <param name="s">   A(i,j).
+            </param>
+            <exception cref="T:System.IndexOutOfRangeException">  
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SetMatrix(System.Int32,System.Int32,System.Int32,System.Int32,DotNetMatrix.GeneralMatrix)">
+            <summary>Set a submatrix.</summary>
+            <param name="i0">  Initial row index
+            </param>
+            <param name="i1">  Final row index
+            </param>
+            <param name="j0">  Initial column index
+            </param>
+            <param name="j1">  Final column index
+            </param>
+            <param name="X">   A(i0:i1,j0:j1)
+            </param>
+            <exception cref="T:System.IndexOutOfRangeException">  Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SetMatrix(System.Int32[],System.Int32[],DotNetMatrix.GeneralMatrix)">
+            <summary>Set a submatrix.</summary>
+            <param name="r">   Array of row indices.
+            </param>
+            <param name="c">   Array of column indices.
+            </param>
+            <param name="X">   A(r(:),c(:))
+            </param>
+            <exception cref="T:System.IndexOutOfRangeException">  Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SetMatrix(System.Int32[],System.Int32,System.Int32,DotNetMatrix.GeneralMatrix)">
+            <summary>Set a submatrix.</summary>
+            <param name="r">   Array of row indices.
+            </param>
+            <param name="j0">  Initial column index
+            </param>
+            <param name="j1">  Final column index
+            </param>
+            <param name="X">   A(r(:),j0:j1)
+            </param>
+            <exception cref="T:System.IndexOutOfRangeException"> Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SetMatrix(System.Int32,System.Int32,System.Int32[],DotNetMatrix.GeneralMatrix)">
+            <summary>Set a submatrix.</summary>
+            <param name="i0">  Initial row index
+            </param>
+            <param name="i1">  Final row index
+            </param>
+            <param name="c">   Array of column indices.
+            </param>
+            <param name="X">   A(i0:i1,c(:))
+            </param>
+            <exception cref="T:System.IndexOutOfRangeException">  Submatrix indices
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Transpose">
+            <summary>Matrix transpose.</summary>
+            <returns>    A'
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Norm1">
+            <summary>One norm</summary>
+            <returns>    maximum column sum.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Norm2">
+            <summary>Two norm</summary>
+            <returns>    maximum singular value.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.NormInf">
+            <summary>Infinity norm</summary>
+            <returns>    maximum row sum.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.NormF">
+            <summary>Frobenius norm</summary>
+            <returns>    sqrt of sum of squares of all elements.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.UnaryMinus">
+            <summary>Unary minus</summary>
+            <returns>    -A
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Add(DotNetMatrix.GeneralMatrix)">
+            <summary>C = A + B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A + B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.AddEquals(DotNetMatrix.GeneralMatrix)">
+            <summary>A = A + B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A + B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Subtract(DotNetMatrix.GeneralMatrix)">
+            <summary>C = A - B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A - B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SubtractEquals(DotNetMatrix.GeneralMatrix)">
+            <summary>A = A - B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A - B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayMultiply(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element multiplication, C = A.*B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A.*B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayMultiplyEquals(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element multiplication in place, A = A.*B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A.*B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayRightDivide(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element right division, C = A./B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A./B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayRightDivideEquals(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element right division in place, A = A./B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A./B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayLeftDivide(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element left division, C = A.\B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A.\B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.ArrayLeftDivideEquals(DotNetMatrix.GeneralMatrix)">
+            <summary>Element-by-element left division in place, A = A.\B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     A.\B
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Multiply(System.Double)">
+            <summary>Multiply a matrix by a scalar, C = s*A</summary>
+            <param name="s">   scalar
+            </param>
+            <returns>     s*A
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.MultiplyEquals(System.Double)">
+            <summary>Multiply a matrix by a scalar in place, A = s*A</summary>
+            <param name="s">   scalar
+            </param>
+            <returns>     replace A by s*A
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Multiply(DotNetMatrix.GeneralMatrix)">
+            <summary>Linear algebraic matrix multiplication, A * B</summary>
+            <param name="B">   another matrix
+            </param>
+            <returns>     Matrix product, A * B
+            </returns>
+            <exception cref="T:System.ArgumentException">  Matrix inner dimensions must agree.
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.op_Addition(DotNetMatrix.GeneralMatrix,DotNetMatrix.GeneralMatrix)">
+            <summary>
+             Addition of matrices
+            </summary>
+            <param name="m1"></param>
+            <param name="m2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.op_Subtraction(DotNetMatrix.GeneralMatrix,DotNetMatrix.GeneralMatrix)">
+            <summary>
+            Subtraction of matrices
+            </summary>
+            <param name="m1"></param>
+            <param name="m2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.op_Multiply(DotNetMatrix.GeneralMatrix,DotNetMatrix.GeneralMatrix)">
+            <summary>
+            Multiplication of matrices
+            </summary>
+            <param name="m1"></param>
+            <param name="m2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.LUD">
+            <summary>LU Decomposition</summary>
+            <returns>     LUDecomposition
+            </returns>
+            <seealso cref="T:DotNetMatrix.LUDecomposition">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.QRD">
+            <summary>QR Decomposition</summary>
+            <returns>     QRDecomposition
+            </returns>
+            <seealso cref="T:DotNetMatrix.QRDecomposition">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.chol">
+            <summary>Cholesky Decomposition</summary>
+            <returns>     CholeskyDecomposition
+            </returns>
+            <seealso cref="T:DotNetMatrix.CholeskyDecomposition">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SVD">
+            <summary>Singular Value Decomposition</summary>
+            <returns>     SingularValueDecomposition
+            </returns>
+            <seealso cref="T:DotNetMatrix.SingularValueDecomposition">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Eigen">
+            <summary>Eigenvalue Decomposition</summary>
+            <returns>     EigenvalueDecomposition
+            </returns>
+            <seealso cref="T:DotNetMatrix.EigenvalueDecomposition">
+            </seealso>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Solve(DotNetMatrix.GeneralMatrix)">
+            <summary>Solve A*X = B</summary>
+            <param name="B">   right hand side
+            </param>
+            <returns>     solution if A is square, least squares solution otherwise
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.SolveTranspose(DotNetMatrix.GeneralMatrix)">
+            <summary>Solve X*A = B, which is also A'*X' = B'</summary>
+            <param name="B">   right hand side
+            </param>
+            <returns>     solution if A is square, least squares solution otherwise.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Inverse">
+            <summary>Matrix inverse or pseudoinverse</summary>
+            <returns>     inverse(A) if A is square, pseudoinverse otherwise.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Determinant">
+            <summary>GeneralMatrix determinant</summary>
+            <returns>     determinant
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Rank">
+            <summary>GeneralMatrix rank</summary>
+            <returns>     effective numerical rank, obtained from SVD.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Condition">
+            <summary>Matrix condition (2 norm)</summary>
+            <returns>     ratio of largest to smallest singular value.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Trace">
+            <summary>Matrix trace.</summary>
+            <returns>     sum of the diagonal elements.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Random(System.Int32,System.Int32)">
+            <summary>Generate matrix with random elements</summary>
+            <param name="m">   Number of rows.
+            </param>
+            <param name="n">   Number of colums.
+            </param>
+            <returns>     An m-by-n matrix with uniformly distributed random elements.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Identity(System.Int32,System.Int32)">
+            <summary>Generate identity matrix</summary>
+            <param name="m">   Number of rows.
+            </param>
+            <param name="n">   Number of colums.
+            </param>
+            <returns>     An m-by-n matrix with ones on the diagonal and zeros elsewhere.
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.CheckMatrixDimensions(DotNetMatrix.GeneralMatrix)">
+            <summary>Check if size(A) == size(B) *</summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Dispose">
+            <summary>
+            Do not make this method virtual.
+            A derived class should not be able to override this method.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Dispose(System.Boolean)">
+            <summary>
+            Dispose(bool disposing) executes in two distinct scenarios.
+            If disposing equals true, the method has been called directly
+            or indirectly by a user's code. Managed and unmanaged resources
+            can be disposed.
+            If disposing equals false, the method has been called by the 
+            runtime from inside the finalizer and you should not reference 
+            other objects. Only unmanaged resources can be disposed.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Finalize">
+            <summary>
+            This destructor will run only if the Dispose method 
+            does not get called.
+            It gives your base class the opportunity to finalize.
+            Do not provide destructors in types derived from this class.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.Clone">
+            <summary>Clone the GeneralMatrix object.</summary>
+        </member>
+        <member name="M:DotNetMatrix.GeneralMatrix.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            A method called when serializing this class
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="T:DotNetMatrix.LUDecomposition">
+            <summary>LU Decomposition.
+            For an m-by-n matrix A with m >= n, the LU decomposition is an m-by-n
+            unit lower triangular matrix L, an n-by-n upper triangular matrix U,
+            and a permutation vector piv of length m so that A(piv,:) = L*U.
+            <code> If m &lt; n, then L is m-by-m and U is m-by-n. </code>
+            The LU decompostion with pivoting always exists, even if the matrix is
+            singular, so the constructor will never fail.  The primary use of the
+            LU decomposition is in the solution of square systems of simultaneous
+            linear equations.  This will fail if IsNonSingular() returns false.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.LUDecomposition.LU">
+            <summary>Array for internal storage of decomposition.
+            @serial internal array storage.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.LUDecomposition.m">
+            <summary>Row and column dimensions, and pivot sign.
+            @serial column dimension.
+            @serial row dimension.
+            @serial pivot sign.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.LUDecomposition.n">
+            <summary>Row and column dimensions, and pivot sign.
+            @serial column dimension.
+            @serial row dimension.
+            @serial pivot sign.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.LUDecomposition.pivsign">
+            <summary>Row and column dimensions, and pivot sign.
+            @serial column dimension.
+            @serial row dimension.
+            @serial pivot sign.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.LUDecomposition.piv">
+            <summary>Internal storage of pivot vector.
+            @serial pivot vector.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.LUDecomposition.#ctor(DotNetMatrix.GeneralMatrix)">
+            <summary>LU Decomposition</summary>
+            <param name="A">  Rectangular matrix
+            </param>
+            <returns>     Structure to access L, U and piv.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.LUDecomposition.IsNonSingular">
+            <summary>Is the matrix nonsingular?</summary>
+            <returns>     true if U, and hence A, is nonsingular.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.LUDecomposition.L">
+            <summary>Return lower triangular factor</summary>
+            <returns>     L
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.LUDecomposition.U">
+            <summary>Return upper triangular factor</summary>
+            <returns>     U
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.LUDecomposition.Pivot">
+            <summary>Return pivot permutation vector</summary>
+            <returns>     piv
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.LUDecomposition.DoublePivot">
+            <summary>Return pivot permutation vector as a one-dimensional double array</summary>
+            <returns>     (double) piv
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.LUDecomposition.Determinant">
+            <summary>Determinant</summary>
+            <returns>     det(A)
+            </returns>
+            <exception cref="T:System.ArgumentException">  Matrix must be square
+            </exception>
+        </member>
+        <member name="M:DotNetMatrix.LUDecomposition.Solve(DotNetMatrix.GeneralMatrix)">
+            <summary>Solve A*X = B</summary>
+            <param name="B">  A Matrix with as many rows as A and any number of columns.
+            </param>
+            <returns>     X so that L*U*X = B(piv,:)
+            </returns>
+            <exception cref="T:System.ArgumentException"> Matrix row dimensions must agree.
+            </exception>
+            <exception cref="T:System.SystemException"> Matrix is singular.
+            </exception>
+        </member>
+        <member name="T:DotNetMatrix.QRDecomposition">
+            <summary>QR Decomposition.
+            For an m-by-n matrix A with m >= n, the QR decomposition is an m-by-n
+            orthogonal matrix Q and an n-by-n upper triangular matrix R so that
+            A = Q*R.
+            
+            The QR decompostion always exists, even if the matrix does not have
+            full rank, so the constructor will never fail.  The primary use of the
+            QR decomposition is in the least squares solution of nonsquare systems
+            of simultaneous linear equations.  This will fail if IsFullRank()
+            returns false.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.QRDecomposition.QR">
+            <summary>Array for internal storage of decomposition.
+            @serial internal array storage.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.QRDecomposition.m">
+            <summary>Row and column dimensions.
+            @serial column dimension.
+            @serial row dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.QRDecomposition.n">
+            <summary>Row and column dimensions.
+            @serial column dimension.
+            @serial row dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.QRDecomposition.Rdiag">
+            <summary>Array for internal storage of diagonal of R.
+            @serial diagonal of R.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.QRDecomposition.#ctor(DotNetMatrix.GeneralMatrix)">
+            <summary>QR Decomposition, computed by Householder reflections.</summary>
+            <param name="A">   Rectangular matrix
+            </param>
+            <returns>     Structure to access R and the Householder vectors and compute Q.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.QRDecomposition.FullRank">
+            <summary>Is the matrix full rank?</summary>
+            <returns>     true if R, and hence A, has full rank.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.QRDecomposition.H">
+            <summary>Return the Householder vectors</summary>
+            <returns>     Lower trapezoidal matrix whose columns define the reflections
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.QRDecomposition.R">
+            <summary>Return the upper triangular factor</summary>
+            <returns>     R
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.QRDecomposition.Q">
+            <summary>Generate and return the (economy-sized) orthogonal factor</summary>
+            <returns>     Q
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.QRDecomposition.Solve(DotNetMatrix.GeneralMatrix)">
+            <summary>Least squares solution of A*X = B</summary>
+            <param name="B">   A Matrix with as many rows as A and any number of columns.
+            </param>
+            <returns>     X that minimizes the two norm of Q*R*X-B.
+            </returns>
+            <exception cref="T:System.ArgumentException"> Matrix row dimensions must agree.
+            </exception>
+            <exception cref="T:System.SystemException"> Matrix is rank deficient.
+            </exception>
+        </member>
+        <member name="T:DotNetMatrix.SingularValueDecomposition">
+            <summary>Singular Value Decomposition.
+            <P/>
+            For an m-by-n matrix A with m >= n, the singular value decomposition is
+            an m-by-n orthogonal matrix U, an n-by-n diagonal matrix S, and
+            an n-by-n orthogonal matrix V so that A = U*S*V'.
+            <P/>
+            The singular values, sigma[k] = S[k][k], are ordered so that
+            sigma[0] >= sigma[1] >= ... >= sigma[n-1].
+            <P/>
+            The singular value decompostion always exists, so the constructor will
+            never fail.  The matrix condition number and the effective numerical
+            rank can be computed from this decomposition.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.SingularValueDecomposition.U">
+            <summary>Arrays for internal storage of U and V.
+            @serial internal storage of U.
+            @serial internal storage of V.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.SingularValueDecomposition.V">
+            <summary>Arrays for internal storage of U and V.
+            @serial internal storage of U.
+            @serial internal storage of V.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.SingularValueDecomposition.s">
+            <summary>Array for internal storage of singular values.
+            @serial internal storage of singular values.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.SingularValueDecomposition.m">
+            <summary>Row and column dimensions.
+            @serial row dimension.
+            @serial column dimension.
+            </summary>
+        </member>
+        <member name="F:DotNetMatrix.SingularValueDecomposition.n">
+            <summary>Row and column dimensions.
+            @serial row dimension.
+            @serial column dimension.
+            </summary>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.#ctor(DotNetMatrix.GeneralMatrix)">
+            <summary>Construct the singular value decomposition</summary>
+            <param name="Arg">   Rectangular matrix
+            </param>
+            <returns>     Structure to access U, S and V.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.SingularValueDecomposition.SingularValues">
+            <summary>Return the one-dimensional array of singular values</summary>
+            <returns>     diagonal of S.
+            </returns>
+        </member>
+        <member name="P:DotNetMatrix.SingularValueDecomposition.S">
+            <summary>Return the diagonal matrix of singular values</summary>
+            <returns>     S
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.GetU">
+            <summary>Return the left singular vectors</summary>
+            <returns>     U
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.GetV">
+            <summary>Return the right singular vectors</summary>
+            <returns>     V
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.Norm2">
+            <summary>Two norm</summary>
+            <returns>     max(S)
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.Condition">
+            <summary>Two norm condition number</summary>
+            <returns>     max(S)/min(S)
+            </returns>
+        </member>
+        <member name="M:DotNetMatrix.SingularValueDecomposition.Rank">
+            <summary>Effective numerical matrix rank</summary>
+            <returns>     Number of nonnegligible singular values.
+            </returns>
+        </member>
+    </members>
+</doc>
