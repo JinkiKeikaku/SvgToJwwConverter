@@ -1,6 +1,7 @@
 ﻿using CadMath2D;
 using CadMath2D.Parameters;
 using SvgHelper;
+using System.Drawing;
 
 namespace SvgToJwwConverter.SvgToJww.Shapes {
     class SvgEllipse : SvgShape {
@@ -8,6 +9,8 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
         public double Rx;
         public double Ry;
         public double Angle;
+        public Color LineColor;
+        public Color FillColor;
 
         public SvgEllipse(
             SvgElement element,

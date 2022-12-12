@@ -1,10 +1,12 @@
 ﻿using CadMath2D;
 using SvgHelper;
+using System.Drawing;
 
 namespace SvgToJwwConverter.SvgToJww.Shapes {
     class SvgLine : SvgShape {
         public CadPoint P0;
         public CadPoint P1;
+        public Color LineColor;
         public SvgLine(
             SvgElement element, CadPoint p0, CadPoint p1
         ) : base(element)
@@ -12,6 +14,8 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
             P0 = p0;
             P1 = p1;
         }
+
+
 
         public override void Offset(CadPoint dp)
         {

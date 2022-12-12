@@ -1,11 +1,15 @@
 ﻿using CadMath2D;
 using SvgHelper;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace SvgToJwwConverter.SvgToJww.Shapes {
     class SvgPolyline : SvgShape {
         public List<CadPoint> Points = new();
         public bool IsClosed;
+        public Color LineColor;
+        public Color FillColor;
+
         public SvgPolyline(
             SvgElement element, IReadOnlyList<CadPoint> points, bool isClosed
         ) : base(element)
