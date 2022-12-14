@@ -13,6 +13,10 @@ using static CadMath2D.CadPoint;
 using static CadMath2D.CadMath;
 using System.Drawing;
 using System.Windows;
+using CadMath2D.Curves;
+using System.Text.RegularExpressions;
+using System.Windows.Shapes;
+using CadMath2D.Path;
 
 namespace SvgToJwwConverter.SvgToJww {
     static class ShapeConverter {
@@ -27,8 +31,8 @@ namespace SvgToJwwConverter.SvgToJww {
             return Array.Empty<JwwData>();
         }
 
-        private static JwwData[] ConvertToJww(SvgShape svgShape) 
-        { 
+        private static JwwData[] ConvertToJww(SvgShape svgShape)
+        {
             var element = svgShape.Element;
             switch (svgShape)
             {
@@ -44,9 +48,10 @@ namespace SvgToJwwConverter.SvgToJww {
                 case SvgPolyline s:
                 {
                     var sa = new List<JwwData>();
+
                     if (IsSolidEnable(s.FillColor))
                     {
-                        if(s.Points.Count > 1)
+                        if (s.Points.Count > 1)
                         {
                             if (s.Points.Count < 5)
                             {
@@ -153,15 +158,63 @@ namespace SvgToJwwConverter.SvgToJww {
                 case SvgGroup s:
                 {
                     var sa = new List<JwwData>();
-                    foreach(var ss in s.Shapes)
+                    foreach (var ss in s.Shapes)
                     {
                         sa.AddRange(ConvertToJww(ss));
+                    }
+                    return sa.ToArray();
+                }
+                case SvgPath s:
+                {
+                    var sa = new List<JwwData>();
+                    if (IsSolidEnable(s.FillColor))
+                    {
+
+                        var poly = PolylineHelper.PolygonsToConnectedPolygon(s.PointsList);
+                        var ts = ConvertPolygonToTriangle(poly);
+                        foreach (var t in ts)
+                        {
+                            var js = new JwwSolid()
+                            {
+                                m_start_x = t.P0.X,
+                                m_start_y = t.P0.Y,
+                                m_end_x = t.P1.X,
+                                m_end_y = t.P1.Y,
+                                m_DPoint2_x = t.P2.X,
+                                m_DPoint2_y = t.P2.Y,
+                                m_DPoint3_x = t.P0.X,
+                                m_DPoint3_y = t.P0.Y,
+                            };
+                            SetSolidColor(js, s.FillColor);
+                            js.m_nPenStyle = 0;
+                            sa.Add(js);
+                        }
+                    }
+                    if (IsLineEnable(s.LineColor))
+                    {
+                        foreach (var poly in s.PointsList)
+                        {
+                            EnumPoints(poly, false, (p1, p2, _) => {
+                                var js = new JwwSen();
+                                js.m_start_x = p1.X;
+                                js.m_start_y = p1.Y;
+                                js.m_end_x = p2.X;
+                                js.m_end_y = p2.Y;
+                                sa.Add(js);
+                                return true;
+                            });
+                        }
                     }
                     return sa.ToArray();
                 }
             }
             return Array.Empty<JwwData>();
         }
+
+
+
+
+
 
         static bool IsLineEnable(Color c)
         {
@@ -249,7 +302,7 @@ namespace SvgToJwwConverter.SvgToJww {
             switch (element.NodeName)
             {
                 case "g":
-                    if (element is SvgShapeContainer sc) return CreateGroupShape(sc);
+                    if (element is SvgShapeContainer sc) return CreateGroup(sc);
                     return null;
                 case "use":
                 {
@@ -315,7 +368,8 @@ namespace SvgToJwwConverter.SvgToJww {
                     return CreatePolyline(element, false);
                 case "polygon":
                     return CreatePolyline(element, true);
-
+                case "path":
+                    return CreatePath(element);
             }
             return null;
         }
@@ -331,7 +385,7 @@ namespace SvgToJwwConverter.SvgToJww {
             return s;
         }
 
-        static SvgGroup? CreateGroupShape(SvgShapeContainer shapeContainer)
+        static SvgGroup? CreateGroup(SvgShapeContainer shapeContainer)
         {
             var g = new SvgGroup(shapeContainer);
             foreach (var element in shapeContainer.ShapeElementList)
@@ -345,6 +399,298 @@ namespace SvgToJwwConverter.SvgToJww {
             if (g.Shapes.Count == 0) return null;
             return g;
         }
+
+        static SvgPath? CreatePath(SvgElement element)
+        {
+            var pathShape = new SvgPath(element);
+
+            var path = element.GetAttribute("d", false);
+            if (path == null) return null;
+            // 単純に数値と１文字のコマンドで分ける。区切り文字のコンマやスペースのチェックは行わない。
+            //以下の構文でコマンドと数値に分割された文字列の配列になる。
+            var pa = Regex.Matches(path, @"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?|[a-z]|[A-Z]")
+                .OfType<Match>()
+                .Select(m => m.Groups[0].Value)
+                .ToArray();
+            var cp = new CadPoint();
+            var lastCt = new CadPoint();//最後のベジェの制御点
+            var isBesier2Ciontinue = false;
+            var isBesier3Ciontinue = false;
+            var pts = new List<CadPoint>();
+            string cmd = "";
+            for (var i = 0; i < pa.Length; i++)
+            {
+                var isBesier2Draw = false;
+                var isBesier3Draw = false;
+                //前回のコマンドの次が数値の場合、前回のコマンドを続けて実行。ただし、M(m)の場合はL(l)とする。
+                //前回のコマンドが非対応の場合はコマンドが""。
+                if (cmd != "" && double.TryParse(pa[i], out var tmp))
+                {
+                    i--;
+                    if (i < 0) break;
+                    if (cmd == "m") cmd = "l";
+                    if (cmd == "M") cmd = "L";
+                } else
+                {
+                    cmd = pa[i];
+                }
+                switch (cmd)
+                {
+                    case "m":
+                    case "M":
+                    {
+                        var s = CreatePath(element, pts, false);
+                        if (s != null) pathShape.PointsList.Add(s);
+                        pts.Clear();
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = cmd == "M" ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        pts.Add(cp.Copy());
+                    }
+                    break;
+
+                    case "l":
+                    case "L":
+                    {
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = cmd == "L" ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        if (pts.Count > 0) pts.Add(cp.Copy());
+                    }
+                    break;
+                    case "h":
+                    case "H":
+                    {
+                        var x = double.Parse(pa[++i]);
+                        cp = cmd == "H" ? new CadPoint(x, cp.Y) : new CadPoint(cp.X + x, cp.Y);
+                        if (pts.Count > 0) pts.Add(cp.Copy());
+                    }
+                    break;
+                    case "v":
+                    case "V":
+                    {
+                        var y = double.Parse(pa[++i]);
+                        cp = cmd == "V" ? new CadPoint(cp.X, y) : new CadPoint(cp.X, cp.Y + y);
+                        if (pts.Count > 0) pts.Add(cp.Copy());
+                    }
+                    break;
+                    case "Z":
+                    case "z":
+                    {
+                        var s = CreatePath(element, pts, true);
+                        if (s != null) pathShape.PointsList.Add(s);
+                        pts.Clear();
+                    }
+                    break;
+                    case "A":
+                    case "a":
+                    {
+                        var rx = double.Parse(pa[++i]);
+                        var ry = double.Parse(pa[++i]);
+                        var xAxisRotation = double.Parse(pa[++i]);
+                        var largeArcFlag = int.Parse(pa[++i]);
+                        var sweepFlag = int.Parse(pa[++i]);
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        var p = cp;
+                        cp = cmd == "A" ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+
+                        //傾いた楕円は面倒なので円に変換
+                        var f = ry / rx;
+                        var angle = CadMath.DegToRad(xAxisRotation);
+                        var p1 = cp - p;
+                        p1.Rotate(-angle);
+                        p1.Y /= f;
+                        var p2 = p1.Copy();
+                        //始点を基準にした円になった
+                        var a2 = rx * rx - CadPoint.Dot(p1, p1) / 4;
+                        if (a2 < 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Svg path A: small radius rx:{rx} ry:{ry}");
+                            rx = p1.Hypot() * 0.5;
+                            a2 = 0;
+                            //                                return;
+                        }
+                        p1.Unit();
+                        if (!p1.IsZero())
+                        {
+                            p1 *= Math.Sqrt(a2);
+                            p1.Rotate(Math.PI / 2);
+                            var p01 = p1 + p2 * 0.5;
+                            var p02 = -p1 + p2 * 0.5;
+                            CadPoint p0;
+                            double sw;
+                            var ey = CadPoint.Cross(-p01, p2 - p01);
+                            var ex = CadPoint.Dot(-p01, p2 - p01);
+                            if (sweepFlag == 1)
+                            {
+                                //cw
+                                if (ey >= 0)
+                                {
+                                    if (largeArcFlag == 0)
+                                    {
+                                        p0 = p01;
+                                        sw = CadMath.RadToDeg360(Math.Atan2(ey, ex));
+                                    } else
+                                    {
+                                        p0 = p02;
+                                        sw = 360 - CadMath.RadToDeg360(Math.Atan2(ey, ex));
+                                    }
+                                } else
+                                {
+                                    if (largeArcFlag == 0)
+                                    {
+                                        p0 = p02;
+                                        sw = CadMath.RadToDeg360(Math.Atan2(ey, ex)) - 360;
+                                    } else
+                                    {
+                                        p0 = p01;
+                                        sw = CadMath.RadToDeg360(Math.Atan2(ey, ex));
+                                    }
+                                }
+                            } else
+                            {
+                                //ccw
+                                if (ey < 0)
+                                {
+                                    if (largeArcFlag == 0)
+                                    {
+                                        p0 = p01;
+                                        sw = CadMath.RadToDeg360(Math.Atan2(ey, ex)) - 360;
+                                    } else
+                                    {
+                                        p0 = p02;
+                                        sw = CadMath.RadToDeg360(Math.Atan2(ey, ex));
+                                    }
+                                } else
+                                {
+                                    if (largeArcFlag == 0)
+                                    {
+                                        p0 = p02;
+                                        sw = -CadMath.RadToDeg360(Math.Atan2(ey, ex));// - 360;
+                                    } else
+                                    {
+                                        p0 = p01;
+                                        sw = -360 + CadMath.RadToDeg360(Math.Atan2(ey, ex));
+                                    }
+                                }
+
+                            }
+                            var sa = (-p0).GetAngle360();
+                            p0.Y *= f;
+                            p0.Rotate(angle);
+                            p0 += p;
+                            pts.AddRange(CircleHelper.CreateArcPoints(p0, rx, f, xAxisRotation, sa, sw, 360));
+                        }
+                    }
+                    break;
+                    case "Q":
+                    case "q":
+                    {
+                        //2次ベジェ
+                        var f = cmd == "Q";
+                        var p = cp;
+                        var xc = double.Parse(pa[++i]);
+                        var yc = double.Parse(pa[++i]);
+                        cp = f ? new CadPoint(xc, yc) : new CadPoint(cp.X + xc, cp.Y + yc);
+                        var ct = cp;
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = f ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        pts.AddRange(Beziers.CreateBezier2(p, ct, cp, 16, true));
+                        lastCt = ct;
+                        isBesier2Draw = true;
+                    }
+                    break;
+                    case "T":
+                    case "t":
+                    {
+                        //2次ベジェ。制御点は前回の点対称
+                        var p = cp;
+                        var ct = isBesier2Ciontinue ? lastCt.RotatePoint(p, Math.PI) : p;
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = cmd == "T" ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        pts.AddRange(Beziers.CreateBezier2(p, ct, cp, 16, true));
+                        lastCt = ct;
+                        isBesier2Draw = true;
+                    }
+                    break;
+                    case "C":
+                    case "c":
+                    {
+                        //3次ベジェ
+                        var f = cmd == "C";
+                        var p = cp;//始点
+                        var xc1 = double.Parse(pa[++i]);
+                        var yc1 = double.Parse(pa[++i]);
+                        var ct1 = f ? new CadPoint(xc1, yc1) : new CadPoint(cp.X + xc1, cp.Y + yc1);
+                        //                            var ct1 = cp;
+                        var xc2 = double.Parse(pa[++i]);
+                        var yc2 = double.Parse(pa[++i]);
+                        var ct2 = f ? new CadPoint(xc2, yc2) : new CadPoint(cp.X + xc2, cp.Y + yc2);
+                        //                            var ct2 = cp;
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = f ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        pts.AddRange(Beziers.CreateBezier3(p, ct1, ct2, cp, 16, true));
+                        lastCt = ct2;
+                        isBesier3Draw = true;
+                    }
+                    break;
+                    case "S":
+                    case "s":
+                    {
+                        //3次ベジェ。制御点は前回の点対称
+                        var f = cmd == "S";
+                        var p = cp;
+                        var ct1 = isBesier3Ciontinue ? lastCt.RotatePoint(p, Math.PI) : p;
+                        var xc2 = double.Parse(pa[++i]);
+                        var yc2 = double.Parse(pa[++i]);
+                        var ct2 = f ? new CadPoint(xc2, yc2) : new CadPoint(cp.X + xc2, cp.Y + yc2);
+                        //                            var ct2 = cp;
+                        var x = double.Parse(pa[++i]);
+                        var y = double.Parse(pa[++i]);
+                        cp = f ? new CadPoint(x, y) : new CadPoint(cp.X + x, cp.Y + y);
+                        pts.AddRange(Beziers.CreateBezier3(p, ct1, ct2, cp, 16, true));
+                        lastCt = ct2;
+                        isBesier3Draw = true;
+                    }
+                    break;
+
+                    default:
+                        cmd = "";
+                        break;
+                }
+                isBesier2Ciontinue = isBesier2Draw; ;
+                isBesier3Ciontinue = isBesier3Draw;
+            }
+            var ps = CreatePath(element, pts, false);
+            if (ps != null) pathShape.PointsList.Add(ps);
+            pathShape.LineColor = GetColor(element, "stroke");
+            pathShape.FillColor = GetColor(element, "fill");
+            return pathShape;
+        }
+
+        static List<CadPoint>? CreatePath(SvgElement element, List<CadPoint> pts, bool loop)
+        {
+            PolylineHelper.Degenerate(pts, loop);
+            if (pts.Count < 2) return null;
+            var s = new List<CadPoint>();
+            foreach (var p in pts)
+            {
+                s.Add(p.Copy());
+            }
+            if (loop) s.Add(pts[0].Copy());
+
+            return s;
+        }
+
+
+        static CadPoint ConvertPathPoint(CadPoint p) => new CadPoint(p.X, p.Y);
+
+        static double ConvertPathAngle(double a) => a;
+
 
         static Color GetColor(SvgElement element, string name)
         {
