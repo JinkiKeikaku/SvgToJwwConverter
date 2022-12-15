@@ -179,6 +179,15 @@ namespace SvgToJwwConverter.Properties {
         }
         
         /// <summary>
+        ///   The number of divisions of the curve. If increase the number of divisions for a figure with many figure elements, it will take a long time to process. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tooltip_CurveDiv {
+            get {
+                return ResourceManager.GetString("Tooltip_CurveDiv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Converts only strokes and does not convert fills. Strokes also show the outline of the fill. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Tooltip_OnlyLine {

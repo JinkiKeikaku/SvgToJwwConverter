@@ -76,6 +76,7 @@
                             MinWidth="60"
                             Margin="4,4,0,4"
                             HorizontalAlignment="Left"
+                            ToolTip="{x:Static properties:Resources.Tooltip_CurveDiv}"
                             ItemsSource="{Binding CurveDivList}"
                             SelectedItem="{Binding CurveDiv}" />
 
@@ -87,13 +88,13 @@
                         Content="{x:Static properties:Resources.OnlyLine}"
                         IsChecked="{Binding OnlyLine}"
                         ToolTip="{x:Static properties:Resources.Tooltip_OnlyLine}" />
-                    <CheckBox
+                    <!--<CheckBox
                         x:Name="Part_Overwrite"
                         Margin="4"
                         VerticalAlignment="Center"
                         Content="{x:Static properties:Resources.Overwrite}"
                         IsChecked="{Binding EnableOverwrite}"
-                        ToolTip="{x:Static properties:Resources.Tooltip_Overwrite}" />
+                        ToolTip="{x:Static properties:Resources.Tooltip_Overwrite}" />-->
                     <CheckBox
                         x:Name="Part_OpenJww"
                         Margin="4"
@@ -173,8 +174,6 @@
             <StatusBarItem DockPanel.Dock="Left">
                 <TextBlock x:Name="Part_Message" VerticalAlignment="Center" />
             </StatusBarItem>
-
         </StatusBar>
-
     </Grid>
 </Window>

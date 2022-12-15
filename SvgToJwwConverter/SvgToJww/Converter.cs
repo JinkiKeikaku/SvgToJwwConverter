@@ -6,11 +6,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SvgToJwwConverter.SvgToJww {
     static class Converter {
-        public static void ConvertToJww(string outPath, SvgShapeContainer container)
+        public static void ConvertToJww(
+            string outPath, SvgShapeContainer container, 
+            CancellationToken cancelToken, Action<string> processMessage)
         {
             var writer = new JwwHelper.JwwWriter();
             var tmp = Path.GetTempFileName();
@@ -30,14 +33,16 @@ namespace SvgToJwwConverter.SvgToJww {
                     case SvgShapeElement shape:
                     {
                         var m = shape.GetMultipliedTransformMatrix();
-                        var sa = ShapeConverter.CreateJwwShape(shape, ConvertToJww(m, jwwPaperSize));
+                        var sa = ShapeConverter.CreateJwwShape(
+                            shape, ConvertToJww(m, jwwPaperSize), cancelToken, processMessage);
                         AddJwwData(writer, sa);
                     }
                     break;
                     case SvgShapeContainer shapeContainer:
                     {
                         var m = shapeContainer.GetMultipliedTransformMatrix();
-                        var sa = ShapeConverter.CreateJwwShape(shapeContainer, ConvertToJww(m, jwwPaperSize));
+                        var sa = ShapeConverter.CreateJwwShape(
+                            shapeContainer, ConvertToJww(m, jwwPaperSize), cancelToken, processMessage);
                         AddJwwData(writer, sa);
                     }
                     break;

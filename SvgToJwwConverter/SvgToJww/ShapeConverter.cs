@@ -12,27 +12,33 @@ using static CadMath2D.CadPointHelper;
 using static CadMath2D.CadPoint;
 using static CadMath2D.CadMath;
 using System.Drawing;
-using System.Windows;
+using System.Drawing.Drawing2D;
 using CadMath2D.Curves;
 using System.Text.RegularExpressions;
 using System.Windows.Shapes;
 using CadMath2D.Path;
 using SvgToJwwConverter.Properties;
+using static SvgToJwwConverter.SvgToJww.Shapes.SvgText;
+using System.Windows.Controls;
+using System.Threading;
 
 namespace SvgToJwwConverter.SvgToJww {
     static class ShapeConverter {
-        public static JwwData[] CreateJwwShape(SvgElement element, TransformMatrix m)
+        public static JwwData[] CreateJwwShape(
+            SvgElement element, TransformMatrix m, 
+            CancellationToken cancelToken, Action<string> processMessage)
         {
             var svgShape = ConvertToSvgShape(element);
             if (svgShape != null)
             {
                 svgShape.Transform(m);
-                return ConvertToJww(svgShape);
+                return ConvertToJww(svgShape, cancelToken, processMessage);
             }
             return Array.Empty<JwwData>();
         }
 
-        private static JwwData[] ConvertToJww(SvgShape svgShape)
+        private static JwwData[] ConvertToJww(
+            SvgShape svgShape, CancellationToken cancelToken, Action<string> processMessage)
         {
             var element = svgShape.Element;
             switch (svgShape)
@@ -161,7 +167,7 @@ namespace SvgToJwwConverter.SvgToJww {
                     var sa = new List<JwwData>();
                     foreach (var ss in s.Shapes)
                     {
-                        sa.AddRange(ConvertToJww(ss));
+                        sa.AddRange(ConvertToJww(ss, cancelToken, processMessage));
                     }
                     return sa.ToArray();
                 }
@@ -170,8 +176,9 @@ namespace SvgToJwwConverter.SvgToJww {
                     var sa = new List<JwwData>();
                     if (IsSolidEnable(s.FillColor))
                     {
-                        var poly = PathConverter.PathToConnectedPolygon(s.PathList, Settings.Default.CurveDiv);
-                        var ts = PolylineHelper.ConvertPolygonToTriangle (poly);
+                        var poly = PathConverter.PathToSinglePolygon(
+                            s.PathList, Settings.Default.CurveDiv, cancelToken, processMessage);
+                        var ts = PolylineHelper.ConvertPolygonToTriangle (poly, cancelToken, processMessage);
                         foreach (var t in ts)
                         {
                             var js = new JwwSolid()
@@ -208,25 +215,53 @@ namespace SvgToJwwConverter.SvgToJww {
                     }
                     return sa.ToArray();
                 }
+                case SvgText s:
+                {
+                    var moji = new JwwMoji();
+                    moji.m_strFontName = "ＭＳ ゴシック";
+                    moji.m_string = s.Text;
+                    moji.m_dSizeY = s.FontHeight;
+                    moji.m_dSizeX = s.FontWidth;
+                    moji.m_degKakudo = s.Angle;
+                    var dp = CadPoint.Pole(s.Width, DegToRad(s.Angle));
+                    var p0 = s.P0.Copy();
+                    switch (s.Basis)
+                    {
+                        case TextBasis.BottomCenter:
+                            p0.Offset(-dp*0.5);
+                            break;
+                        case TextBasis.BottomRight:
+                            p0.Offset(-dp);
+                            break;
+                        default:
+                            break;
+                    }
+                    moji.m_start_x = p0.X;
+                    moji.m_start_y = p0.Y;
+                    var p1 = p0 + dp;
+                    moji.m_end_x = p1.X;
+                    moji.m_end_y = p1.Y;
+                    return new[] {moji};
+                }
             }
             return Array.Empty<JwwData>();
         }
 
         static bool IsLineEnable(Color c)
         {
-            if (Properties.Settings.Default.OnlyLine) return true;
+            if (Settings.Default.OnlyLine) return true;
             return c.A != 0;
         }
 
         static bool IsSolidEnable(Color c)
         {
-            if (Properties.Settings.Default.OnlyLine) return false;
+            if (Settings.Default.OnlyLine) return false;
             return c.A != 0;
         }
 
         static bool SetSolidColor(JwwSolid js, Color c)
         {
-            if (Properties.Settings.Default.OnlyLine) return false;
+            if (Settings.Default.OnlyLine) return false;
             js.m_nPenColor = 10;
             js.m_Color = c.R + (c.G << 8) + (c.B << 16);
             return true;
@@ -305,6 +340,8 @@ namespace SvgToJwwConverter.SvgToJww {
                     return CreatePolyline(element, true);
                 case "path":
                     return CreatePath(element);
+                case "text":
+                    return CreateText(element);
             }
             return null;
         }
@@ -543,25 +580,58 @@ namespace SvgToJwwConverter.SvgToJww {
 
         }
 
-        //static List<CadPoint>? CreatePath(SvgElement element, List<CadPoint> pts, bool loop)
-        //{
-        //    PolylineHelper.Degenerate(pts, loop);
-        //    if (pts.Count < 2) return null;
-        //    var s = new List<CadPoint>();
-        //    foreach (var p in pts)
-        //    {
-        //        s.Add(p.Copy());
-        //    }
-        //    if (loop) s.Add(pts[0].Copy());
-
-        //    return s;
-        //}
+        static SvgText? CreateText(SvgElement element)
+        {
+            if (element is SvgShapeElement te)
+            {
+                var s = new SvgText(element)
+                {
+                    Text = te.Text,
+                    P0 = GetPoint(element, "x", "y"),
+                    Basis = TextBasis.BottomLeft,
+                };
+                var anc = element.GetAttribute("text-anchor", true);
+                switch (anc)
+                {
+                    case "middle":
+                        s.Basis = TextBasis.BottomCenter;
+                        break;
+                    case "end":
+                        s.Basis = TextBasis.BottomRight;
+                        break;
+                }
+                var fhs = element.GetAttribute("font-size", true);
+                if (fhs != null)
+                {
+                    s.FontHeight = ConvertLength(fhs, 16.0);
+                }
+                var fn = element.GetAttribute("font-family", true);
+                if (fn != null)
+                {
+                    s.FontName = fn;
+                }
+                s.FontWidth = s.FontHeight;
+                s.Width = GetTextWidth(s.Text, s.FontName, s.FontHeight);
+                return s;
+            }
+            return null;
+        }
 
 
         static CadPoint ConvertPathPoint(CadPoint p) => new CadPoint(p.X, p.Y);
 
         static double ConvertPathAngle(double a) => a;
 
+        static double GetTextWidth(string text, string fontName, double height)
+        {
+            return height * text.Length;
+
+            //var bmp = new Bitmap(10, 10);
+            //var g = Graphics.FromImage(bmp);
+            //var fnt = new Font(fontName, (float)height);
+            //var stringSize = g.MeasureString(text, fnt);
+            //return (double) stringSize.Width;
+        }
 
         static Color GetColor(SvgElement element, string name)
         {
@@ -585,11 +655,43 @@ namespace SvgToJwwConverter.SvgToJww {
             return Color.Black;
         }
 
-
-
         static CadPoint GetPoint(SvgElement element, string x, string y)
         {
             return new CadPoint(element.GetDouble(x), element.GetDouble(y));
+        }
+
+        /// <summary>
+        /// 単位を含めた長さの変換。単位はcm,mm,Q,in,pc,pt,px。単位が無いか未知の単位の場合は数値をそのまま返す。
+        /// 数値が変換できない場合はデフォルト値を返す。
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        static double ConvertLength(string? s, double defaultValue = 0.0)
+        {
+            if (s == null) return defaultValue;
+            s = s.Trim();
+            var i = 0;
+            while (i < s.Length)
+            {
+                if (char.IsLetter(s[i])) break;
+                i++;
+            }
+            var a = s.Substring(0, i);
+            if (!double.TryParse(a, out var d)) return defaultValue;
+            if (i == s.Length) return d;
+            var b = s.Substring(i);
+            return b switch
+            {
+                "cm" => d * 10.0,
+                "mm" => d,
+                "Q" => d * 0.25,
+                "in" => d * 25.4,
+                "pc" => d * 25.4 / 6.0,
+                "pt" => d * 25.4 / 72.0,
+                "pX" => d * 25.4 / 96.0,
+                _ => d,
+            };
         }
 
 

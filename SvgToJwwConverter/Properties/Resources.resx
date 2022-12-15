@@ -157,6 +157,9 @@
   <data name="template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\template.jww;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Tooltip_CurveDiv" xml:space="preserve">
+    <value>The number of divisions of the curve. If increase the number of divisions for a figure with many figure elements, it will take a long time to process.</value>
+  </data>
   <data name="Tooltip_OnlyLine" xml:space="preserve">
     <value>Converts only strokes and does not convert fills. Strokes also show the outline of the fill.</value>
   </data>

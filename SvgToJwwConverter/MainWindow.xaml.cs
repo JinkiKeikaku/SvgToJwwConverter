@@ -12,6 +12,7 @@ using System.Media;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static System.Formats.Asn1.AsnWriter;
+//using static System.Net.Mime.MediaTypeNames;
 using Path = System.IO.Path;
 
 
@@ -73,6 +75,7 @@ namespace SvgToJwwConverter
         }
 
         private string mSvgPath = "";
+        private string mJwwPath = "";
         private bool mConvertCancel = false;
 
         private void Part_Open_Click(object sender, RoutedEventArgs e)
@@ -86,8 +89,19 @@ namespace SvgToJwwConverter
             if (f.ShowDialog(Application.Current.MainWindow) == true) SetSvgPath(f.FileName);
         }
 
+        private readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+
         private async void Part_Convert_Click(object sender, RoutedEventArgs e)
         {
+            var f = new SaveFileDialog
+            {
+                FileName = Path.ChangeExtension(mSvgPath, "jww"),
+                FilterIndex = 1,
+                Filter = "SVG file(.svg)|*.svg|All files (*.*)|*.*",
+            };
+            if (f.ShowDialog(Application.Current.MainWindow) != true) return;
+            mJwwPath = f.FileName;
+
             using var r = File.OpenRead(mSvgPath);
             var reader = new SvgHelper.SvgReader();
             try
@@ -96,6 +110,8 @@ namespace SvgToJwwConverter
                 Part_Cancel.Visibility = Visibility.Visible;
                 Part_Progress.Visibility = Visibility.Visible;
                 Part_Progress.IsIndeterminate = true;
+
+
                 await Task.Run(() => {
                     reader.Read(r, Completed);
                 });
@@ -107,6 +123,10 @@ namespace SvgToJwwConverter
                 {
                     SetMessage(Properties.Resources.Completed, 3000);
                 }
+            } catch(OperationCanceledException ex)
+            {
+                SystemSounds.Beep.Play();
+                SetMessage("Canceled", 3000);
             } catch (Exception ex)
             {
                 SystemSounds.Beep.Play();
@@ -124,7 +144,7 @@ namespace SvgToJwwConverter
 
         private void Part_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            mConvertCancel = true;
+            CancellationTokenSource.Cancel();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -143,12 +163,16 @@ namespace SvgToJwwConverter
         /// </summary>
         private void Completed(SvgShapeContainer container)
         {
-            var fileName = @"d:\out.jww";
-            Converter.ConvertToJww(fileName, container);
+            var cancelToken = CancellationTokenSource.Token;
+            Converter.ConvertToJww(mJwwPath, container, cancelToken, (s) => {
+                this.Dispatcher.Invoke(() => {
+                    SetMessage(s, 0);
+                });
+            });
             if (OpenJwwAfterConversion)
             {
                 Process.Start(
-                    new ProcessStartInfo("cmd", $"/c start {fileName}")
+                    new ProcessStartInfo("cmd", $"/c start {mJwwPath}")
                     {
                         CreateNoWindow = true,
                         UseShellExecute = false,
