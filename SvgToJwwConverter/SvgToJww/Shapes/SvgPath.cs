@@ -1,11 +1,12 @@
 ﻿using CadMath2D;
+using CadMath2D.Path;
 using SvgHelper;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace SvgToJwwConverter.SvgToJww.Shapes {
     class SvgPath : SvgShape {
-        public List<List<CadPoint>> PointsList = new();
+        public List<IPathElement> PathList = new();
         public Color LineColor;
         public Color FillColor;
 
@@ -14,16 +15,17 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
         }
         public override void Offset(CadPoint dp)
         {
-            foreach (var pa in PointsList)
+            var m = TransformMatrix.CreateOffsetMatrix(dp.X, dp.Y);
+            foreach (var pa in PathList)
             {
-                foreach (var p in pa) p.Offset(dp);
+                pa.Transform(m);
             }
         }
         public override void Transform(TransformMatrix m)
         {
-            foreach (var pa in PointsList)
+            foreach (var pa in PathList)
             {
-                foreach (var p in pa) p.Set(m * p);
+                pa.Transform(m);
             }
         }
     }
