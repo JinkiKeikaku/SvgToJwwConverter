@@ -21,6 +21,7 @@ using SvgToJwwConverter.Properties;
 using static SvgToJwwConverter.SvgToJww.Shapes.SvgText;
 using System.Windows.Controls;
 using System.Threading;
+using System.Runtime.Intrinsics.X86;
 
 namespace SvgToJwwConverter.SvgToJww {
     static class ShapeConverter {
@@ -50,6 +51,7 @@ namespace SvgToJwwConverter.SvgToJww {
                     js.m_start_y = s.P0.Y;
                     js.m_end_x = s.P1.X;
                     js.m_end_y = s.P1.Y;
+                    SetJwwPen(js, s.LineColor, s.LineWidth);
                     return new[] { js };
                 }
                 case SvgPolyline s:
@@ -115,7 +117,7 @@ namespace SvgToJwwConverter.SvgToJww {
                             }
                         }
                     }
-                    if (IsLineEnable(s.LineColor))
+                    if (IsLineEnable(s.LineColor, s.LineWidth))
                     {
                         EnumPoints(s.Points, s.IsClosed, (p1, p2, _) => {
                             var js = new JwwSen();
@@ -123,6 +125,7 @@ namespace SvgToJwwConverter.SvgToJww {
                             js.m_start_y = p1.Y;
                             js.m_end_x = p2.X;
                             js.m_end_y = p2.Y;
+                            SetJwwPen(js, s.LineColor, s.LineWidth);
                             sa.Add(js);
                             return true;
                         });
@@ -148,7 +151,7 @@ namespace SvgToJwwConverter.SvgToJww {
                         SetSolidColor(solid, s.FillColor);
                         sa.Add(solid);
                     }
-                    if (IsLineEnable(s.LineColor))
+                    if (IsLineEnable(s.LineColor, s.LineWidth))
                     {
                         var js = new JwwEnko();
                         js.m_start_x = s.P0.X;
@@ -158,6 +161,7 @@ namespace SvgToJwwConverter.SvgToJww {
                         js.m_dHenpeiRitsu = s.Ry / s.Rx;
                         js.m_radKaishiKaku = 0.0;
                         js.m_radEnkoKaku = 2.0 * Math.PI;
+                        SetJwwPen(js, s.LineColor, s.LineWidth);
                         sa.Add(js);
                     }
                     return sa.ToArray();
@@ -197,7 +201,7 @@ namespace SvgToJwwConverter.SvgToJww {
                             sa.Add(js);
                         }
                     }
-                    if (IsLineEnable(s.LineColor))
+                    if (IsLineEnable(s.LineColor, s.LineWidth))
                     {
                         var polyList = PathConverter.PathToPolygons(s.PathList, Settings.Default.CurveDiv);
                         foreach (var poly in polyList)
@@ -208,6 +212,7 @@ namespace SvgToJwwConverter.SvgToJww {
                                 js.m_start_y = p1.Y;
                                 js.m_end_x = p2.X;
                                 js.m_end_y = p2.Y;
+                                SetJwwPen(js, s.LineColor, s.LineWidth);
                                 sa.Add(js);
                                 return true;
                             });
@@ -247,10 +252,10 @@ namespace SvgToJwwConverter.SvgToJww {
             return Array.Empty<JwwData>();
         }
 
-        static bool IsLineEnable(Color c)
+        static bool IsLineEnable(Color c, double width)
         {
             if (Settings.Default.OnlyLine) return true;
-            return c.A != 0;
+            return c.A != 0 && width > 0.0;
         }
 
         static bool IsSolidEnable(Color c)
@@ -259,9 +264,16 @@ namespace SvgToJwwConverter.SvgToJww {
             return c.A != 0;
         }
 
+        static bool SetJwwPen(JwwData jd, Color c, double width)
+        {
+            if (!IsLineEnable(c, width)) return false;
+            jd.m_nPenColor = (short)Settings.Default.PenNumber;
+            return true;
+        }
+
         static bool SetSolidColor(JwwSolid js, Color c)
         {
-            if (Settings.Default.OnlyLine) return false;
+            if(!IsSolidEnable(c)) return false;
             js.m_nPenColor = 10;
             js.m_Color = c.R + (c.G << 8) + (c.B << 16);
             return true;
@@ -299,6 +311,7 @@ namespace SvgToJwwConverter.SvgToJww {
                             element,
                             GetPoint(element, "x1", "y1"), GetPoint(element, "x2", "y2"));
                     s.LineColor = GetColor(element, "stroke");
+                    s.LineWidth = GetLineWidth(element);
                     return s;
 
                 }
@@ -312,6 +325,7 @@ namespace SvgToJwwConverter.SvgToJww {
                     r.Sort();
                     var s = new SvgPolyline(element, r.GetVertices(), true);
                     s.LineColor = GetColor(element, "stroke");
+                    s.LineWidth = GetLineWidth(element);
                     s.FillColor = GetColor(element, "fill");
                     return s;
                 }
@@ -321,6 +335,7 @@ namespace SvgToJwwConverter.SvgToJww {
                         element,
                         GetPoint(element, "cx", "cy"), element.GetDouble("r"));
                     s.LineColor = GetColor(element, "stroke");
+                    s.LineWidth = GetLineWidth(element);
                     s.FillColor = GetColor(element, "fill");
                     return s;
                 }
@@ -331,6 +346,7 @@ namespace SvgToJwwConverter.SvgToJww {
                         GetPoint(element, "cx", "cy"),
                         element.GetDouble("rx"), element.GetDouble("ry"), 0.0);
                     s.LineColor = GetColor(element, "stroke");
+                    s.LineWidth = GetLineWidth(element);
                     s.FillColor = GetColor(element, "fill");
                     return s;
                 }
@@ -353,6 +369,7 @@ namespace SvgToJwwConverter.SvgToJww {
                  element.GetPoints("points").ConvertAll<CadPoint>(it => new CadPoint(it.x, it.y)),
                 isPolygon);
             s.LineColor = GetColor(element, "stroke");
+            s.LineWidth = GetLineWidth(element);
             s.FillColor = GetColor(element, "fill");
             return s;
         }
@@ -575,6 +592,7 @@ namespace SvgToJwwConverter.SvgToJww {
             var pathShape = new SvgPath(element);
             pathShape.PathList.AddRange(pathList);
             pathShape.LineColor = GetColor(element, "stroke");
+            pathShape.LineWidth = GetLineWidth(element);
             pathShape.FillColor = GetColor(element, "fill");
             return pathShape;
 
@@ -632,9 +650,15 @@ namespace SvgToJwwConverter.SvgToJww {
             //return height * text.Length;
         }
 
+        static double GetLineWidth(SvgElement element)
+        {
+            return ConvertLength(element.GetAttribute("stroke-width", true), 1.0);
+        }
+
         static Color GetColor(SvgElement element, string name)
         {
-            var opacity = element.GetMultipliedOpacity();
+            var opacity = element.GetMultipliedOpacity() * element.GetDouble($"{name}-opacity", 1.0);
+
             var color = element.GetAttribute(name, true);
             if (color == null || color == "none")
             {
@@ -648,7 +672,7 @@ namespace SvgToJwwConverter.SvgToJww {
                     return Color.FromArgb(a, c);
                 } catch
                 {
-                    System.Diagnostics.Debug.WriteLine($"color fail :{color}");
+                    System.Diagnostics.Debug.WriteLine($"{name} color fail :{color}");
                 }
             }
             return Color.Black;

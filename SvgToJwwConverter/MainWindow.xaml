@@ -8,6 +8,8 @@
     xmlns:properties="clr-namespace:SvgToJwwConverter.Properties"
     Title="{x:Static local:Utility.Title}"
     AllowDrop="True"
+    Drop="Window_Drop"
+    PreviewDragOver="Window_PreviewDragOver"
     Closing="Window_Closing"
     Loaded="Window_Loaded"
     SizeToContent="WidthAndHeight"
@@ -58,6 +60,40 @@
                     Content="..."
                     ToolTip="{x:Static properties:Resources.Tooltip_SelectFile}" />
             </StackPanel>
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Height="26"
+                Margin="4"
+                VerticalAlignment="Center"
+                Content="{x:Static properties:Resources.Paper}" />
+            <ComboBox
+                x:Name="Part_Paper"
+                Grid.Row="2"
+                Grid.Column="1"
+                MinWidth="200"
+                Margin="4"
+                HorizontalAlignment="Left"
+                ItemsSource="{Binding PaperList}"
+                SelectedItem="{Binding Paper}" />
+
+            <Label
+                Grid.Row="3"
+                Grid.Column="0"
+                Height="26"
+                Margin="4,0,4,0"
+                VerticalAlignment="Center"
+                Content="{x:Static properties:Resources.Scale}" />
+            <ComboBox
+                x:Name="Part_Scale"
+                Grid.Row="3"
+                Grid.Column="1"
+                MinWidth="60"
+                Margin="4,4,0,4"
+                HorizontalAlignment="Left"
+                ItemsSource="{Binding ScaleList}"
+                SelectedItem="{Binding Scale}" />
+
             <GroupBox
                 Grid.Row="4"
                 Grid.Column="0"
@@ -79,8 +115,24 @@
                             ToolTip="{x:Static properties:Resources.Tooltip_CurveDiv}"
                             ItemsSource="{Binding CurveDivList}"
                             SelectedItem="{Binding CurveDiv}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label
+                            Height="26"
+                            Margin="4,0,4,0"
+                            VerticalAlignment="Center"
+                            Content="{x:Static properties:Resources.PenNumber}" />
+                        <ComboBox
+                            x:Name="Part_PenNumber"
+                            MinWidth="60"
+                            Margin="4,4,0,4"
+                            HorizontalAlignment="Left"
+                            ToolTip="{x:Static properties:Resources.Tooltip_PenNumber}"
+                            ItemsSource="{Binding PenNumberList}"
+                            SelectedItem="{Binding PenNumber}" />
 
                     </StackPanel>
+
                     <CheckBox
                         x:Name="Part_OnlyLine"
                         Margin="4"

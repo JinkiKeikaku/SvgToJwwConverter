@@ -106,5 +106,41 @@ namespace SvgToJwwConverter.Properties {
                 this["OnlyLine"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int PenNumber {
+            get {
+                return ((int)(this["PenNumber"]));
+            }
+            set {
+                this["PenNumber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int JwwPaperCode {
+            get {
+                return ((int)(this["JwwPaperCode"]));
+            }
+            set {
+                this["JwwPaperCode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double JwwScaleValue {
+            get {
+                return ((double)(this["JwwScaleValue"]));
+            }
+            set {
+                this["JwwScaleValue"] = value;
+            }
+        }
     }
 }

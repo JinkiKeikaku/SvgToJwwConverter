@@ -20,7 +20,8 @@ namespace SvgToJwwConverter.SvgToJww {
             var buf = Properties.Resources.template;
             File.WriteAllBytes(tmp, buf);
             writer.InitHeader(tmp);
-            writer.Header.m_adScale[0] = 1.0;
+            writer.Header.m_nZumen = Properties.Settings.Default.JwwPaperCode;
+            writer.Header.m_adScale[0] = Properties.Settings.Default.JwwScaleValue;
             writer.Header.m_nBitMapFirstDraw = 0;
 
             File.Delete(tmp);
@@ -28,6 +29,7 @@ namespace SvgToJwwConverter.SvgToJww {
 
             foreach (var element in container.ShapeElementList)
             {
+                if (cancelToken.IsCancellationRequested) cancelToken.ThrowIfCancellationRequested();
                 switch (element)
                 {
                     case SvgShapeElement shape:

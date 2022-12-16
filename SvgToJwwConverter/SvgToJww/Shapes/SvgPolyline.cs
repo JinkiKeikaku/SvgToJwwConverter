@@ -8,6 +8,7 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
         public List<CadPoint> Points = new();
         public bool IsClosed;
         public Color LineColor;
+        public double LineWidth;
         public Color FillColor;
 
         public SvgPolyline(

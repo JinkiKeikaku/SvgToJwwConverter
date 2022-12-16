@@ -8,6 +8,7 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
     class SvgPath : SvgShape {
         public List<IPathElement> PathList = new();
         public Color LineColor;
+        public double LineWidth;
         public Color FillColor;
 
         public SvgPath(SvgElement element) : base(element)

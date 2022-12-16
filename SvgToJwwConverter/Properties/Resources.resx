@@ -153,6 +153,15 @@
   <data name="OverwriteConfirm" xml:space="preserve">
     <value>{0} is already exist.\nOverwrite?</value>
   </data>
+  <data name="Paper" xml:space="preserve">
+    <value>Paper</value>
+  </data>
+  <data name="PenNumber" xml:space="preserve">
+    <value>Pen No.</value>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\template.jww;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -168,6 +177,9 @@
   </data>
   <data name="Tooltip_Overwrite" xml:space="preserve">
     <value>If checked, it will overwrite without confirmation even if the same file name already exists.</value>
+  </data>
+  <data name="Tooltip_PenNumber" xml:space="preserve">
+    <value>The Jw_cad pen number to use for the line. Line colors cannot be converted with this app. Therefore, all line colors will be this pen number.</value>
   </data>
   <data name="Tooltip_SelectFile" xml:space="preserve">
     <value>Click to open a file open dialog. Then select the SVG file to convert.</value>

@@ -169,6 +169,33 @@ namespace SvgToJwwConverter.Properties {
         }
         
         /// <summary>
+        ///   Paper に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Paper {
+            get {
+                return ResourceManager.GetString("Paper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Pen No. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string PenNumber {
+            get {
+                return ResourceManager.GetString("PenNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Scale に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Scale {
+            get {
+                return ResourceManager.GetString("Scale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Byte[] のローカライズされたリソースを検索します。
         /// </summary>
         public static byte[] template {
@@ -211,6 +238,15 @@ namespace SvgToJwwConverter.Properties {
         public static string Tooltip_Overwrite {
             get {
                 return ResourceManager.GetString("Tooltip_Overwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The Jw_cad pen number to use for the line. Line colors cannot be converted with this app. Therefore, all line colors will be this pen number. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Tooltip_PenNumber {
+            get {
+                return ResourceManager.GetString("Tooltip_PenNumber", resourceCulture);
             }
         }
         

@@ -7,6 +7,8 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
         public CadPoint P0;
         public CadPoint P1;
         public Color LineColor;
+        public double LineWidth;
+
         public SvgLine(
             SvgElement element, CadPoint p0, CadPoint p1
         ) : base(element)

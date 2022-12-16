@@ -10,6 +10,7 @@ namespace SvgToJwwConverter.SvgToJww.Shapes {
         public double Ry;
         public double Angle;
         public Color LineColor;
+        public double LineWidth;
         public Color FillColor;
 
         public SvgEllipse(
