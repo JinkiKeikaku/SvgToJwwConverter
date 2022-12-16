@@ -622,15 +622,14 @@ namespace SvgToJwwConverter.SvgToJww {
 
         static double ConvertPathAngle(double a) => a;
 
+        static Bitmap mTestBitmap = new Bitmap(30, 30);
         static double GetTextWidth(string text, string fontName, double height)
         {
-            return height * text.Length;
-
-            //var bmp = new Bitmap(10, 10);
-            //var g = Graphics.FromImage(bmp);
-            //var fnt = new Font(fontName, (float)height);
-            //var stringSize = g.MeasureString(text, fnt);
-            //return (double) stringSize.Width;
+            var g = Graphics.FromImage(mTestBitmap);
+            var fnt = new Font(fontName, (float)height);
+            var stringSize = g.MeasureString(text, fnt);
+            return (double)stringSize.Width;
+            //return height * text.Length;
         }
 
         static Color GetColor(SvgElement element, string name)
